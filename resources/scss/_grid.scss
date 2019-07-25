@@ -1,0 +1,20 @@
+.grid
+{
+    display: grid;
+
+    .grid-row {
+        display: grid;
+        grid-template: "grid-column";
+    }
+    .grid-column
+    {
+        display: grid;
+        grid-area: grid-column;
+        grid-column: auto;
+    }
+}
+.grid-2
+{
+    display: grid;
+    grid-template-columns: auto auto;
+}
