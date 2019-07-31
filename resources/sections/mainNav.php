@@ -1,10 +1,7 @@
 <?php
 $isAuth = App\Providers\AuthProvider::isAuthorized();
 
-$links = [
-    'Home' => ['link' => 'home/'],
-    'Document' => ['link' => 'document/'],
-];
+$links = config('NAV');
 
 $bag = array_merge_recursive(['links' => $links], $bag ?? []);
 
