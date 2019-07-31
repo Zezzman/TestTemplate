@@ -50,12 +50,14 @@ final class FileHelper extends Helper
     /**
      * Read File of type
      */
-    public static function readFile(string $path, string $type)
+    public static function readFile(string $path, string $type, bool $setHeader = true)
     {
         if (file_exists($path) && is_file($path)) {
             ob_start();
             ob_clean();
-            header('Content-Type: ' . $type);
+            if ($setHeader) {
+                header('Content-Type: ' . $type);
+            }
             readfile($path);
             exit();
         } else {

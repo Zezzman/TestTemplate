@@ -3,11 +3,14 @@ namespace App\Providers;
 
 use App\Helpers\DataCleanerHelper;
 use App\Helpers\HTTPHelper;
+use App\Helpers\FileHelper;
 use App\Traits\Feedback;
 /**
  * File Manager
  * 
  * Upload/Download/Manage Client uploaded files
+ * 
+ * Allow paths are relative to storage directory
  */
 final class FileProvider
 {
@@ -17,7 +20,6 @@ final class FileProvider
     const EXTENSIONS = ['jpeg','jpg','png', 'pdf'];
     const TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
     
-    protected $allowUpload = true;
     protected $path = null;
     protected $info = [];
 
@@ -27,7 +29,7 @@ final class FileProvider
             return;
         }
         $this->path = DataCleanerHelper::cleanValue($path);
-        if (!$this->Valid()) {
+        if (! $this->isValid()) {
             $this->path = '';
         } else {
             $this->info = pathinfo($this->FullPath());
@@ -36,7 +38,7 @@ final class FileProvider
     /**
      * Creates file instance
      * 
-     * @param   string      $file_name              file path
+     * @param   string      $path              file path
      * 
      * @return  self    file instance
      */
@@ -44,6 +46,38 @@ final class FileProvider
     {
         $file = new self($path);
         return $file;
+    }
+    /**
+     * Creates instance of files
+     * 
+     * @param   string      $dir                        directory of files
+     * @param   array       $allowExtensions            all allowed extensions
+     * 
+     * @return  self    file instance
+     */
+    public static function scan(string $dir, array $allowExtensions = [])
+    {
+        $files = [];
+        $root = config('PATHS.STORAGE');
+        if (! empty($dir)) {
+            if (is_dir($root . $dir)) {
+                $names = scandir($root . $dir);
+                foreach ($names as $name) {
+                    if ($name !== "." && $name !== "..") {
+                        $file = new self($dir . $name);
+                        if ($file->isValid()) {
+                            if (self::checkExtension($file->extension(), $allowExtensions)) {
+                                $files[] = $file;
+                            }
+                        }
+                    }
+                }
+            } elseif (is_file($root . $dir) && file_exists($root . $dir)) {
+                $files[] = new self($dir);
+            }
+        }
+        
+        return $files;
     }
     /**
      * Check if file exist
@@ -63,6 +97,19 @@ final class FileProvider
     {
         if ($this->info && isset($this->info['extension'])) {
             return $this->info['extension'];
+        } else {
+            return false;
+        }
+    }
+    /**
+     * File mime type
+     * 
+     * @return  string          file mime type
+     */
+    public function type()
+    {
+        if ($this->isValid()) {
+            return mime_content_type($this->fullPath());
         } else {
             return false;
         }
@@ -104,16 +151,22 @@ final class FileProvider
         return '';
     }
     /**
-     * Link to file
+     * Read file
      * 
-     * @return  string      url of the file
+     * @return  bool        false if file cannot be read
      */
-    public function link()
+    public function read()
     {
-        if (empty($this->Path())) {
-            return '';
-        }
-        return config('LINKS.STORAGE') . 'uploads/' . $this->Path();
+        return FileHelper::readFile($this->fullPath(), $this->type());
+    }
+    /**
+     * Print file
+     * 
+     * @return  string      html of embedded file
+     */
+    public function print(string $description = '', string $style = '<img src="data:{type};{base},{data}" alt="{description}">')
+    {
+        return FileHelper::printImage($this->fullPath(), $this->type(), $description, $style);
     }
     /**
      * Uploads File
@@ -131,7 +184,7 @@ final class FileProvider
      */
     public static function upload($fileIndex, string $folder = '', $overwrite = false, string $customName = null, array $allowExtensions = [], $maxSize = 0)
     {
-        if (! self::$allowUpload || ! HTTPHelper::isFile($fileIndex) || ($_FILES[$fileIndex]['error'] !== 0)) {
+        if (! config('PERMISSIONS.ALLOW_UPLOADS') || ! HTTPHelper::isFile($fileIndex) || ($_FILES[$fileIndex]['error'] !== 0)) {
             return false;
         }
 

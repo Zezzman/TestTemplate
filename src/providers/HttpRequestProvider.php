@@ -173,7 +173,6 @@ final class HttpRequestProvider
     public function extension($ext)
     {
         $ext = (array) $ext;
-        $extension = '';
         if (! is_null($this->currentRequests) && $this->currentRequests->valid()) {
             if (is_array($ext)) {
                 foreach ($ext as $file => $type) {
@@ -183,19 +182,33 @@ final class HttpRequestProvider
                             $extension = $this->currentRequests->params['ext'];
                         } elseif (isset($this->currentRequests->params['file'])) {
                             $file = $this->currentRequests->params['file'];
-                            $extension = substr($file, -strpos(strrev($file), '.'));
+                            $pos = strpos(strrev($file), '.');
+                            $extension = substr($file, -$pos);
+                        }
+                        if (! in_array($extension, $ext)) {
+                            $this->currentRequests->respond(415);
+                            $this->currentRequests->message = 'Invalid File Extension';
+                            return $this;
                         }
                     } elseif (is_string($file)) {
                         if (isset($this->currentRequests->params[$file])) {
                             $file = $this->currentRequests->params[$file];
-                            $extension = substr($file, -strpos(strrev($file), '.'));
+                            $pos = strpos(strrev($file), '.');
+                            $extension = substr($file, -$pos);
                         }
-                    }
-                    if ((is_array($type) && ! in_array($extension, $type))
-                    || (is_string($type) && $extension !== $type)) {
-                        $this->currentRequests->respond(415);
-                        $this->currentRequests->message = 'Invalid File Extension';
-                        return $this;
+                        if (is_array($type)) {
+                            if (! in_array($extension, $type)) {
+                                $this->currentRequests->respond(415);
+                                $this->currentRequests->message = 'Invalid File Extension';
+                                return $this;
+                            }
+                        } elseif (is_string($type)) {
+                            if ($extension !== $type) {
+                                $this->currentRequests->respond(415);
+                                $this->currentRequests->message = 'Invalid File Extension';
+                                return $this;
+                            }
+                        }
                     }
                 }
             }
