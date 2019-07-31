@@ -2,7 +2,7 @@
 namespace App;
 
 use App\Interfaces\IRequest;
-use App\Models\RequestModel;
+use App\Models\HttpRequestModel;
 use App\Helpers\DataCleanerHelper;
 use Exception;
 /**
@@ -23,7 +23,7 @@ abstract class APIController
         
     public function Request()
     {
-        return $this->request ?? RequestModel::empty();
+        return $this->request ?? HttpRequestModel::empty();
     }
 
     /**

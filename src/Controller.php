@@ -8,7 +8,7 @@ use App\Providers\SessionProvider;
 use App\Helpers\HTTPHelper;
 use App\Helpers\DataCleanerHelper;
 use App\Exceptions\RespondingException;
-use App\Models\RequestModel;
+use App\Models\HttpRequestModel;
 use App\ViewModels\ViewModel;
 use App\ViewModels\ExceptionViewModel;
 use App\View;
@@ -38,7 +38,7 @@ class Controller implements IController
     }
     public function getRequest()
     {
-        return $this->request ?? RequestModel::empty();
+        return $this->request ?? HttpRequestModel::empty();
     }
     /**
      * Create view

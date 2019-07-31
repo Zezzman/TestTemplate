@@ -1,7 +1,6 @@
 <?php
     $this->layout('layout');
     $this->section('mainNav');
-    var_dump($viewData->controller->getRequest())
 ?>
 <div class="container">
     <div class="row">

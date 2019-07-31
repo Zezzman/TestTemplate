@@ -169,13 +169,20 @@ final class EnvironmentProvider
     private function getConfig()
     {
         $this->add($this->loadConfig('app'));
+        $this->add($this->loadConfig('permissions'));
         $this->add($this->loadConfig('database'));
         $this->add($this->loadConfig('paths'));
         $this->add($this->loadConfig('links'));
     }
     /**
      * Get configurations from environment files
-     * within environment folder
+     * within environment folder.
+     * 
+     * default.env.php is loaded by default.
+     * "APP_ENVIRONMENT".env.php is loaded second if it exist.
+     * 
+     * Set enviroment by setting a global apache variable
+     * "APP_ENVIRONMENT" to file name of environment file
      */
     private function getEnvironment()
     {
@@ -257,6 +264,8 @@ final class EnvironmentProvider
             if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 if ($_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
                     return 'api';
+                } if ($_SERVER['HTTP_X_REQUESTED_WITH'] === 'ContentRequest') {
+                    return 'cvi';
                 } else {
                     http_response_code(406);
                     throw new Exception('Not Acceptable');

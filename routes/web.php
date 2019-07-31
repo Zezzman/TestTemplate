@@ -11,5 +11,7 @@ $provider->get('document/', 'Home@Document');
 /**
  *  Upload files
  */
+$provider->get('storage/uploads/', 'Storage@ListUploads')
+->params(['extensions' => ['jpg', 'jpeg', 'png', 'gif']]);
 $provider->get('storage/uploads/{file}/', 'Storage@Uploads')
-->auth()->isValid()->extension(['jpg', 'jpeg', 'png']);
+->extension(['jpg', 'jpeg', 'png', 'gif']);
