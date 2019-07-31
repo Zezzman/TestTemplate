@@ -264,8 +264,6 @@ final class EnvironmentProvider
             if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 if ($_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
                     return 'api';
-                } if ($_SERVER['HTTP_X_REQUESTED_WITH'] === 'ContentRequest') {
-                    return 'cvi';
                 } else {
                     http_response_code(406);
                     throw new Exception('Not Acceptable');
