@@ -293,7 +293,7 @@ final class ArrayHelper extends Helper
         return $items;
     }
     /**
-     * 
+     *  List entries with incrementing keyName index
      */
     public static function customKeys(array $arr, string $keyName)
     {

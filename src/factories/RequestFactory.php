@@ -132,7 +132,7 @@ class RequestFactory
                 if (strpos($match, '{') !== false) {
                     if ($append == $match) {
                         $items = [];
-                        $j = $i;
+                        $j = ($i - 1);
                         while (++$j < ($i + 10)) {
                             if (isset($availableParams[$j])) {
                                 $items[] = $availableParams[$j];

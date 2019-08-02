@@ -55,15 +55,18 @@ final class FileProvider
      * 
      * @return  self    file instance
      */
-    public static function scan(string $dir, array $allowExtensions = [])
+    public static function scan(string $dir, array $allowExtensions = [], bool $includeFolders = false)
     {
         $files = [];
         $root = config('PATHS.STORAGE');
-        if (! empty($dir)) {
-            if (is_dir($root . $dir)) {
-                $names = scandir($root . $dir);
-                foreach ($names as $name) {
-                    if ($name !== "." && $name !== "..") {
+        $dir = trim($dir, '/') . DIRECTORY_SEPARATOR;
+        if (is_dir($root . $dir)) {
+            $names = scandir($root . $dir);
+            foreach ($names as $name) {
+                if (! preg_match('/(^|\s)[\.]/', $name)) {
+                    if ($includeFolders && is_dir($root . $dir . $name)) {
+                        $files[] = $dir . $name;
+                    } else {
                         $file = new self($dir . $name);
                         if ($file->isValid()) {
                             if (self::checkExtension($file->extension(), $allowExtensions)) {
@@ -72,9 +75,9 @@ final class FileProvider
                         }
                     }
                 }
-            } elseif (is_file($root . $dir) && file_exists($root . $dir)) {
-                $files[] = new self($dir);
             }
+        } elseif (is_file($root . $dir) && file_exists($root . $dir)) {
+            $files[] = new self($dir);
         }
         
         return $files;

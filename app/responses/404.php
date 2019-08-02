@@ -9,7 +9,7 @@
             <p class="lead">
                 Page not found
             </p>
-            <p><?= $model->Message(); ?></p>
+            <p><?= $model->Messages(); ?></p>
             <p><?= $model->Exception(); ?></p>
         </div>
     </div>

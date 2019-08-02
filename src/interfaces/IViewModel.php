@@ -5,5 +5,5 @@ namespace App\Interfaces;
  */
 interface IViewModel
 {
-    public function Message();
+    public function Messages();
 }

@@ -12,7 +12,7 @@ class ViewModel implements IViewModel
     public $messages = [];
     public $exception = null;
 
-    public function Message(string $name = '', string $style = "{message}<br>", int $length = 0)
+    public function Messages(string $name = '', string $style = "{message}<br>", int $length = 0)
     {
         if ($name !== '') {
             return QueryHelper::insertCodes($this->messagesWithName($name) ?? [], $style, true, $length);

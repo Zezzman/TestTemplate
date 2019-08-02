@@ -56,7 +56,7 @@ abstract class APIController
     /**
      * 
      */
-    public static function respond(int $code, string $message = null, IRequest $request = null, Exception $exception = null)
+    public static function respond(int $code, $message = null, IRequest $request = null, Exception $exception = null)
     {
         ob_start();
         ob_clean();
@@ -75,8 +75,13 @@ abstract class APIController
             $body = [
                 'response' => $code,
                 'type' => $response,
-                'message' => DataCleanerHelper::cleanValue($message ?? '')
             ];
+            if (is_string($message)) {
+                $body['message'] = DataCleanerHelper::cleanValue($message ?? '');
+            } else {
+                $message = DataCleanerHelper::cleanArray((array) $message);
+                $body['message'] = $message;
+            }
             if (! is_null($exception) && config('DEBUG')) {
                 $body['request'] = $request;
                 $body['Exception'] = $exception;

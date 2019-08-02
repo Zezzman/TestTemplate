@@ -33,6 +33,7 @@ final class HttpRequestProvider
             if ($this->request->matchRequest($request)) {
                 if ($this->request->requireMethod($request->method)) {
                     if (! $selectedRequest->valid()) {
+                        $request->uri = $this->request->uri;
                         $selectedRequest = $request;
                         break;
                     }
@@ -109,6 +110,7 @@ final class HttpRequestProvider
                         } elseif (HTTPHelper::isGet($index)) {
                             $content = HTTPHelper::get($index);
                         }
+                        $index = $key;
                     }
                     $params[$index] = $content;
                 }
@@ -226,6 +228,34 @@ final class HttpRequestProvider
         && ! is_null($this->currentRequests) 
         && $this->currentRequests->valid()) {
             $this->currentRequests->params = array_merge($this->currentRequests->params, $this->getParams($params));
+        }
+        return $this;
+    }
+    /**
+     * Check request header
+     */
+    public function header($headers)
+    {
+        $serverHeaders = $_SERVER;
+        $headers = (array) $headers;
+        if (! empty($headers)) {
+            foreach ($headers as $key => $header) {
+                if (is_numeric($key) && is_string($header)) {
+                    if (! array_key_exists($header, $serverHeaders)) {
+                        $this->currentRequests->respond(404); // TODO: check correct http response
+                        $this->currentRequests->message = 'Headers do not match';
+                    }
+                } elseif (is_string($key) && is_string($header)) {
+                    if (! array_key_exists($key, $serverHeaders)
+                    || $serverHeaders[$key] !== $header) {
+                        $this->currentRequests->respond(404); // TODO: check correct http response
+                        $this->currentRequests->message = 'Headers do not match';
+                    }
+                } else {
+                    $this->currentRequests->respond(404); // TODO: check correct http response
+                    $this->currentRequests->message = 'Headers do not match';
+                }
+            }
         }
         return $this;
     }
