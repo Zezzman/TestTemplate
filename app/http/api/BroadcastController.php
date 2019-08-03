@@ -29,26 +29,25 @@ final class BroadcastController extends APIController
     public function Collection(string $page = null)
     {
         // collect all media on site and return a json file to represent them
-        if (empty($page)) {
-            $files = (array) \App\Providers\FileProvider::scan('pictures/');
-            $files = array_map(function ($item) {
-                return [
-                    'name' => $item->name(),
-                    'description' => 'picture of nothing',
-                    'url' => config('LINKS.STORAGE') . 'pictures/' . \App\Helpers\DataCleanerHelper::cleanSpaces($item->name()),
-                ];
-            }, $files);
-            $nav = [
-                [
-                    'name' => 'home',
-                    'url' => config('LINKS.PUBLIC') . 'collection/',
-                ],
-                [
-                    'name' => 'images',
-                    'url' => config('LINKS.PUBLIC') . 'collection/' . 'images/',
-                ]
+        $files = (array) \App\Providers\FileProvider::scan('pictures/');
+        $files = array_map(function ($item) {
+            return [
+                'name' => $item->name(),
+                'description' => 'picture of nothing',
+                'url' => config('LINKS.STORAGE') . 'pictures/' . \App\Helpers\DataCleanerHelper::cleanSpaces($item->name()),
             ];
-    
+        }, $files);
+        $nav = [
+            [
+                'name' => 'home',
+                'url' => config('LINKS.PUBLIC') . 'collection/',
+            ],
+            [
+                'name' => 'images',
+                'url' => config('LINKS.PUBLIC') . 'collection/' . 'images/',
+            ]
+        ];
+        if (empty($page)) {
             $collection = [
                 'server' => config('DOMAIN'),
                 'title' => 'front page',
@@ -74,14 +73,6 @@ final class BroadcastController extends APIController
             ];
             self::respond(200, $collection);
         } elseif ($page === 'images') {
-            $files = (array) \App\Providers\FileProvider::scan('pictures/');
-            $files = array_map(function ($item) {
-                return [
-                    'name' => $item->name(),
-                    'description' => 'picture of nothing',
-                    'url' => config('LINKS.STORAGE') . 'pictures/' . \App\Helpers\DataCleanerHelper::cleanSpaces($item->name()),
-                ];
-            }, $files);
             $nav = [
                 [
                     'name' => 'home',
@@ -91,8 +82,8 @@ final class BroadcastController extends APIController
     
             $collection = [
                 'server' => config('DOMAIN'),
-                'title' => 'front page',
-                'description' => 'displaying all content on the server',
+                'title' => 'images',
+                'description' => 'displaying all images',
                 'navigation' => $nav,
                 'image' => $files,
                 'layout' => [
@@ -109,6 +100,5 @@ final class BroadcastController extends APIController
             ];
             self::respond(200, $collection);
         }
-        
     }
 }
