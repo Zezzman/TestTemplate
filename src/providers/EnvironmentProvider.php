@@ -181,7 +181,7 @@ final class EnvironmentProvider
      * default.env.php is loaded by default.
      * "APP_ENVIRONMENT".env.php is loaded second if it exist.
      * 
-     * Set enviroment by setting a global apache variable
+     * Set environment by setting a global apache variable
      * "APP_ENVIRONMENT" to file name of environment file
      */
     private function getEnvironment()
