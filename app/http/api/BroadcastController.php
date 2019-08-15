@@ -26,9 +26,9 @@ final class BroadcastController extends APIController
         echo 'User Notifications';
     }
 
-    public function Collection(string $page = null)
+    public function Collection()
     {
-        // collect all media on site and return a json file to represent them
+        // collect all media on site and return a json file that represent them
         $files = (array) \App\Providers\FileProvider::scan('pictures/');
         $files = array_map(function ($item) {
             return [
@@ -47,58 +47,13 @@ final class BroadcastController extends APIController
                 'url' => config('LINKS.PUBLIC') . 'collection/' . 'images/',
             ]
         ];
-        if (empty($page)) {
-            $collection = [
-                'server' => config('DOMAIN'),
-                'title' => 'front page',
-                'description' => 'displaying all content on the server',
-                'navigation' => $nav,
-                'image' => $files,
-                'layout' => [
-                    'title' => [
-                        'text' => 'title',
-                        'html' => 'h1',
-                    ],
-                    'description',
-                    'navigation' => [
-                        'html' => 'a'
-                    ],
-                    'image' => [
-                        'name',
-                        'html' => 'img',
-                        'url',
-                        'description',
-                    ]
-                ]
-            ];
-            self::respond(200, $collection);
-        } elseif ($page === 'images') {
-            $nav = [
-                [
-                    'name' => 'home',
-                    'url' => config('LINKS.PUBLIC') . 'collection/',
-                ]
-            ];
-    
-            $collection = [
-                'server' => config('DOMAIN'),
-                'title' => 'images',
-                'description' => 'displaying all images',
-                'navigation' => $nav,
-                'image' => $files,
-                'layout' => [
-                    'navigation' => [
-                        'html' => 'a'
-                    ],
-                    'image' => [
-                        'name',
-                        'html' => 'img',
-                        'url',
-                        'description',
-                    ]
-                ]
-            ];
-            self::respond(200, $collection);
-        }
+        $collection = [
+            'server' => config('DOMAIN'),
+            'title' => 'front page',
+            'description' => 'displaying all content on the server',
+            'navigation' => $nav,
+            'image' => $files,
+        ];
+        self::respond(200, $collection);
     }
 }
