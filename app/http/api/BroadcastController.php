@@ -38,11 +38,11 @@ final class BroadcastController extends APIController
             ];
         }, $files);
         $nav = [
-            [
+            'home' => [
                 'name' => 'home',
                 'url' => config('LINKS.PUBLIC') . 'collection/',
             ],
-            [
+            'images' => [
                 'name' => 'images',
                 'url' => config('LINKS.PUBLIC') . 'collection/' . 'images/',
             ]

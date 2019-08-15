@@ -91,12 +91,13 @@ final class DataCleanerHelper extends Helper
      * 
      * @param	string	        $data		                        string of data.
      * @param	string	        $separator		                    separator within data.
-     * @param	Closure	        $callback($result, $data)           callback function.
+     * @param	Closure	        $callback($a, $b, $c, $d)           callback function.
      * @param	int	            $count                              number of times callback is called.
+     * @param	int	            $start                              index to start at.
      * 
      * @return	string	callback result
      */
-    public static function dataMap(string $data, string $separator = ' ', Closure $callback = null, int $count = 0)
+    public static function dataMap(string $data, string $separator = ' ', Closure $callback = null, int $count = 0, int $start = 0)
     {
         $result = '';
         if (! empty($data)) {
@@ -104,16 +105,20 @@ final class DataCleanerHelper extends Helper
             $data = trim($data, $separator);
             $sections = explode($separator, $data);
             if (is_null($callback)) {
-                $callback = function ($a, $b) {
-                    return $a . $b;
+                $callback = function ($a, $b, $c) {
+                    return $a . $b . $c;
                 };
             }
             $i = ($count > 0)? $count : (($count < 0)? count($sections) + $count: count($sections));
+            $start = ($start < 0) ? $i + $start : $start; 
             foreach ($sections as $section) {
-                $i--;
-                if ($i >= 0) {
-                    $result = $callback($result, $section);
+                if ($start <= 0) {
+                    $i--;
+                    if ($i >= 0) {
+                        $result = $callback($result, $section, $separator, $count);
+                    }
                 }
+                $start--;
             }
         }
         return $result;
