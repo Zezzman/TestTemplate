@@ -1,4 +1,5 @@
 <?php
+// URI locations
 $root = config('DOMAIN');
 return [
     'LINKS' => [

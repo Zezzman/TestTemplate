@@ -35,25 +35,20 @@ final class EnvironmentProvider
      * Environment configuration settings
      * 
      * @param   string      $key                key name within configuration settings
-     * @param   bool        $require            when true, throw Exception when key is not found
+     * @param   mix         $default            default value when value is not found
      * 
-     * @return  string|bool     return value related to the $key and return $default when value not found
+     * @return  mix         return value related to the $key and return $default when value is not found
      */
     public function configurations(string $key = null, $default = false)
     {
-        $configs = $this->configs;
-
         if (is_null($key)) {
-            return $configs;
-        } elseif (empty($key)) {
-            return null;
-        }
-
-        $constant = ArrayHelper::deepSearch($configs, strtoupper($key));
-        if (is_null($constant)) {
-            return $default;
+            if ($this->configurations('PERMISSIONS.SHOW_CONFIGURATIONS') === true) {
+                return $this->configs;
+            } else {
+                return $default;
+            }
         } else {
-            return $constant;
+            return self::searchConfig($this->configs, $key, $default);
         }
     }
     /**
@@ -170,6 +165,7 @@ final class EnvironmentProvider
     {
         $this->add($this->loadConfig('app'));
         $this->add($this->loadConfig('permissions'));
+        $this->add($this->loadConfig('namespaces'));
         $this->add($this->loadConfig('database'));
         $this->add($this->loadConfig('paths'));
         $this->add($this->loadConfig('links'));
@@ -189,6 +185,20 @@ final class EnvironmentProvider
         $env = getenv('APP_ENVIRONMENT');
         $this->add($this->loadEnvironment('default'));
         $this->add($this->loadEnvironment($env));
+    }
+    /**
+     * Add configurations from environment files
+     * within environment folder.
+     */
+    public function addEnvironment($environment)
+    {
+        $configs = $this->loadEnvironment($environment);
+        if (! empty($configs)) {
+            if ($this->add($configs)) {
+                return $configs;
+            }
+        }
+        return [];
     }
     /**
      * Load configurations from configuration file
@@ -217,7 +227,7 @@ final class EnvironmentProvider
      * 
      * @return  array        return load configurations
      */
-    private function loadEnvironment(string $name)
+    public function loadEnvironment(string $name)
     {
         if (! empty($name)) {
             $name = dirname(__DIR__) . '/../configs/environments/' . $name . '.env.php';
@@ -272,6 +282,29 @@ final class EnvironmentProvider
             } else {
                 return 'webserver';
             }
+        }
+    }
+
+    /**
+     * Search Configurations
+     * 
+     * @param   array       $config             configuration settings
+     * @param   string      $key                key name within configuration settings
+     * @param   mix         $default            default value when value is not found
+     * 
+     * @return  mix         return value related to the $key and return $default when value is not found
+     */
+    public static function searchConfig(array $configs, string $key, $default = false)
+    {
+        if (empty($key)) {
+            return $default;
+        }
+
+        $constant = ArrayHelper::deepSearch($configs, strtoupper($key));
+        if (is_null($constant)) {
+            return $default;
+        } else {
+            return $constant;
         }
     }
 }

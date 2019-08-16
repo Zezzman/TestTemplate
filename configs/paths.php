@@ -1,4 +1,5 @@
 <?php
+// Directory paths
 $root = config('PATHS.ROOT');
 return [
     'PATHS' => [

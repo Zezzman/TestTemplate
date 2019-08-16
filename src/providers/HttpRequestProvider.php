@@ -2,6 +2,7 @@
 namespace App\Providers;
 
 use App\Providers\AuthProvider;
+use App\Providers\EnvironmentProvider;
 use App\Helpers\HTTPHelper;
 use App\Factories\RequestFactory;
 use App\Models\HttpRequestModel;
@@ -13,6 +14,8 @@ use App\Models\HttpRequestModel;
  */
 final class HttpRequestProvider
 {
+    private $environment = null;
+    private $settings = [];
     private $request = null;
     private $currentRequests = null;
     private $designatedRequests = [];
@@ -35,6 +38,11 @@ final class HttpRequestProvider
                     if (! $selectedRequest->valid()) {
                         $request->uri = $this->request->uri;
                         $selectedRequest = $request;
+                        if (is_string($request->environment)
+                        && ! empty($request->environment)) {
+                            EnvironmentProvider::instance()
+                            ->addEnvironment($request->environment);
+                        }
                         break;
                     }
                 }
@@ -45,11 +53,22 @@ final class HttpRequestProvider
         return $this->request;
     }
     /**
+     * Search settings
+     */
+    private function settings(string $key, $default = false)
+    {
+        return EnvironmentProvider::searchConfig($this->settings, $key, config($key, $default));
+    }
+    /**
      * 
      */
     private function createRequest(string $method, string $requestString, string $actionString = '')
     {
         $this->currentRequests = RequestFactory::httpRequest($requestString, $actionString, $method, config('CLIENT_TYPE'), $this->request->route);
+        $this->currentRequests->environment = $this->environment;
+        if ($this->settings('PERMISSIONS.ALLOW_GUESTS') === false) {
+            $this->auth();
+        }
         return $this->currentRequests;
     }
     /**
@@ -148,8 +167,19 @@ final class HttpRequestProvider
         if (! is_null($this->currentRequests)
         && $this->currentRequests->valid()
         && ! AuthProvider::isAuthorized()) {
-            $this->currentRequests->respond(401);
-            $this->currentRequests->message = 'Request require authorization';
+            $guestsRedirect = $this->settings('GUESTS_REDIRECT');
+            if (is_string($guestsRedirect)
+            && ! empty($guestsRedirect)) {
+                $this->currentRequests->respond(404);
+                $this->redirect((string) $guestsRedirect);
+            } else {
+                if ($this->settings('VISIBLE_RESTRICTIONS', true) === true) {
+                    $this->currentRequests->respond(401);
+                    $this->currentRequests->message = 'Request require authorization';
+                } else {
+                    $this->currentRequests->respond(404);
+                }
+            }
             return $this;
         }
         return $this;
@@ -163,8 +193,12 @@ final class HttpRequestProvider
         if (! is_null($this->currentRequests)
         && $this->currentRequests->valid()
         && AuthProvider::isAuthorized()) {
-            $this->currentRequests->respond(403);
-            $this->currentRequests->message = 'Request only allowed as guest';
+            if ($this->settings('VISIBLE_RESTRICTIONS', true) === true) {
+                $this->currentRequests->respond(403);
+                $this->currentRequests->message = 'Request only allowed as guest';
+            } else {
+                $this->currentRequests->respond(404);
+            }
             return $this;
         }
         return $this;
@@ -260,6 +294,17 @@ final class HttpRequestProvider
         return $this;
     }
     /**
+     * Set request environment
+     */
+    public function setEnvironment($environment)
+    {
+        $this->environment = $environment;
+        if (is_string($environment)) {
+            $this->settings = EnvironmentProvider::instance()->loadEnvironment($environment);
+        }
+        return $this;
+    }
+    /**
      * Set request parameters
      * 
      */
@@ -276,7 +321,7 @@ final class HttpRequestProvider
     /**
      * 
      */
-    public function redirect(string $uri, bool $clearParams = true)
+    public function redirect(string $uri, bool $clearParams = true, int $code = 307)
     {
         if (! is_null($this->currentRequests) 
         && ! $this->currentRequests->valid() && is_null($this->currentRequests->redirect)) {
@@ -284,6 +329,7 @@ final class HttpRequestProvider
             if ($clearParams === true) {
                 $this->currentRequests->params = [];
             }
+            http_response_code($code);
         }
         return $this;
     }
@@ -311,10 +357,13 @@ final class HttpRequestProvider
     /**
      * 
      */
-    public function respond(int $code)
+    public function respond(int $code, string $message = null)
     {
         if (! is_null($this->currentRequests)) {
             $this->currentRequests->respond($code);
+            if (! is_null($message)) {
+                $this->currentRequests->message = $message;
+            }
         }
         return $this;
     }

@@ -79,7 +79,7 @@ final class App
              */
             if ($this->webController($request) === false) {
                 // route to 404 error view
-                Controller::respond(404, 'Invalid Request', $request);
+                Controller::respond(404, '', $request);
             }
             return true;
         } elseif ($type === 'api') {
@@ -88,7 +88,7 @@ final class App
              */
             if ($this->apiController($request) === false) {
                 // return 404 error response
-                APIController::respond(404, "Invalid Request", $request);
+                APIController::respond(404, '', $request);
             }
             return true;
         } elseif ($type === 'cli') {
@@ -127,10 +127,10 @@ final class App
                 Controller::respond($request->response, $request->message, $request);
             }
             if (! is_null($controller) && ! is_null($action) && ! is_null($params)) {
-                $path = "App\\Controllers\\{$controller}Controller";
+                $path = config('NAMESPACES.CONTROLLERS') . "{$controller}Controller";
                 try {
-                    $controller = $this->executeController($request, $path, $action, $params);
                     http_response_code(200);
+                    $controller = $this->executeController($request, $path, $action, $params);
                 } catch (RespondingException $e) {
                     Controller::respond($e->respondCode(), '', $request, $e);
                 } catch (PDOException $e) {
@@ -161,13 +161,12 @@ final class App
                 APIController::respond($request->response, $request->message, $request);
             }
             if (! is_null($controller) && ! is_null($action) && ! is_null($params)) {
-                $path = "App\\API\\{$controller}Controller";
+                $path = config('NAMESPACES.API') . "{$controller}Controller";
                 try {
+                    http_response_code(200);
                     $controller = $this->executeController($request, $path, $action, $params);
                     if (is_null($controller->getContent())) {
                         APIController::respond(204, '', $request);
-                    } else {
-                        http_response_code(200);
                     }
                 } catch (RespondingException $e) {
                     APIController::respond($e->respondCode(), '', $request, $e);
@@ -199,7 +198,7 @@ final class App
                 // APIController::respond($request->response, $request->message, $request);
             }
             if (! is_null($controller) && ! is_null($action) && ! is_null($params)) {
-                $path = "App\\CLI\\{$controller}Controller";
+                $path = config('NAMESPACES.CLI') . "{$controller}Controller";
                 try {
                     $controller = $this->executeController($request, $path, $action, $params);
                 } catch (Exception $e) {

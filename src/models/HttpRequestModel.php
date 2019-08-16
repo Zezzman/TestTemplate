@@ -12,6 +12,7 @@ class HttpRequestModel extends RequestModel
     public $route = null;
     public $method = '';
     public $redirect = null;
+    public $environment = null;
 
     /**
      *  Initiate a request

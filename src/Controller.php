@@ -115,8 +115,8 @@ class Controller implements IController
             $redirect = $request->redirect;
             if (! is_null($redirect)) {
                 SessionProvider::set('refererURI', $request->uri);
-                SessionProvider::set('refererCode', $request->response);
                 $responseCode = http_response_code();
+                SessionProvider::set('refererCode', $responseCode);
                 HTTPHelper::redirect($redirect, $request->params, ($responseCode !== 200 ? $responseCode : null));
             }
         }
