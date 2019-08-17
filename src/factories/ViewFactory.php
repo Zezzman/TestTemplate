@@ -40,13 +40,18 @@ class ViewFactory
     {
         $name = trim($name, '/');
         $name = DataCleanerHelper::cleanValue($name);
+        $path = "/{$name}.php";
 
-        $path = config('PATHS.APP') . "{$name}.php";
         if (file_exists($path)) {
             return $path;
         } else {
-            throw new \Exception('Missing View file : ' . $path);
-            exit();
+            $path = config('PATHS.APP') . "{$name}.php";
+            if (file_exists($path)) {
+                return $path;
+            } else {
+                throw new \Exception('Missing View file : ' . $path);
+                exit();
+            }
         }
     }
 }

@@ -9,7 +9,6 @@ class ComposerStaticInit3cd67bd294b098dc5e3abacaab3f5a38
     public static $prefixLengthsPsr4 = array (
         'C' => 
         array (
-            'Collector\\ViewModels\\' => 21,
             'Collector\\Controllers\\' => 22,
             'Collector\\CLI\\' => 14,
             'Collector\\API\\' => 14,
@@ -37,10 +36,6 @@ class ComposerStaticInit3cd67bd294b098dc5e3abacaab3f5a38
     );
 
     public static $prefixDirsPsr4 = array (
-        'Collector\\ViewModels\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/Collector/viewModels',
-        ),
         'Collector\\Controllers\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Collector/http/controllers',
@@ -59,7 +54,7 @@ class ComposerStaticInit3cd67bd294b098dc5e3abacaab3f5a38
         ),
         'App\\ViewModels\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/app/viewModels',
+            0 => __DIR__ . '/../..' . '/src/viewModels',
         ),
         'App\\Traits\\' => 
         array (

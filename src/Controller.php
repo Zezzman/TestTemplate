@@ -144,7 +144,7 @@ class Controller implements IController
                 }
             }
 
-            $name = ('responses/' . $code);
+            $name = config('PATHS.RESOURCES') . 'responses/' . $code;
             try {
                 $respond->view = View::create($respond, $name, $viewModel);
             } catch (Exception $e) {

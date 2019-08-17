@@ -13,15 +13,16 @@
             "App\\Models\\": "src/models/",
             "App\\Repositories\\": "src/repositories/",
             "App\\Services\\": "src/services/",
+            "App\\ViewModels\\": "src/viewModels/",
+            
             "App\\Controllers\\": "app/http/controllers/",
             "App\\API\\": "app/http/api/",
             "App\\CLI\\": "app/cli/",
-            "App\\ViewModels\\": "app/viewModels/",
+
             "Collector\\": "Collector/",
             "Collector\\Controllers\\": "Collector/http/controllers/",
             "Collector\\API\\": "Collector/http/api/",
-            "Collector\\CLI\\": "Collector/cli/",
-            "Collector\\ViewModels\\": "Collector/viewModels/"
+            "Collector\\CLI\\": "Collector/cli/"
         }
     },
     "require" : {

@@ -6,12 +6,11 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Collector\\ViewModels\\' => array($baseDir . '/Collector/viewModels'),
     'Collector\\Controllers\\' => array($baseDir . '/Collector/http/controllers'),
     'Collector\\CLI\\' => array($baseDir . '/Collector/cli'),
     'Collector\\API\\' => array($baseDir . '/Collector/http/api'),
     'Collector\\' => array($baseDir . '/Collector'),
-    'App\\ViewModels\\' => array($baseDir . '/app/viewModels'),
+    'App\\ViewModels\\' => array($baseDir . '/src/viewModels'),
     'App\\Traits\\' => array($baseDir . '/src/traits'),
     'App\\Services\\' => array($baseDir . '/src/services'),
     'App\\Repositories\\' => array($baseDir . '/src/repositories'),
