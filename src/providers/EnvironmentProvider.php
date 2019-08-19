@@ -230,7 +230,7 @@ final class EnvironmentProvider
     public function loadEnvironment(string $name)
     {
         if (! empty($name)) {
-            $name = dirname(__DIR__) . '/../configs/environments/' . $name . '.env.php';
+            $name = dirname(__DIR__) . '/../configs/environments/' . $name . '.php';
             if (file_exists($name)) {
                 $config = require($name);
                 if (is_array($config)) {
