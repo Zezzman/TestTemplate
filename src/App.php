@@ -1,7 +1,8 @@
 <?php
-use App\Interfaces\IRequest;
 use App\Controller;
 use App\APIController;
+use App\CLIController;
+use App\Interfaces\IRequest;
 use App\Providers\EnvironmentProvider;
 use App\Exceptions\RespondingException;
 /**
@@ -139,6 +140,8 @@ final class App
                     Controller::respond(500, '', $request, $e);
                 }
                 return true;
+            } else {
+                Controller::respond(404, '', $request);
             }
         }
         return false;
@@ -176,6 +179,8 @@ final class App
                     APIController::respond(500, '', $request, $e);
                 }
                 return true;
+            } else {
+                APIController::respond(404, '', $request);
             }
         }
         return false;
@@ -195,16 +200,22 @@ final class App
             $params = $request->params;
 
             if (! is_null($request->response)) {
-                // APIController::respond($request->response, $request->message, $request);
+                CLIController::respond($request->response, $request->message, $request);
             }
             if (! is_null($controller) && ! is_null($action) && ! is_null($params)) {
                 $path = config('NAMESPACES.CLI') . "{$controller}Controller";
                 try {
                     $controller = $this->executeController($request, $path, $action, $params);
+                } catch (RespondingException $e) {
+                    CLIController::respond($e->respondCode(), '', $request, $e);
+                } catch (PDOException $e) {
+                    CLIController::respond(503, '', $request, $e);
                 } catch (Exception $e) {
-                    // APIController::respond(500, '', $request, $e);
+                    CLIController::respond(500, '', $request, $e);
                 }
                 return true;
+            } else {
+                CLIController::respond(404, 'No commands executed', $request);
             }
         }
         return false;

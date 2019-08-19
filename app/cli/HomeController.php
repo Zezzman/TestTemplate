@@ -10,6 +10,6 @@ final class HomeController extends CLIController
 {
     public function Index()
     {
-        echo config('App.NAME') . " cli access point\n";
+        CLIController::respond(200, 'cli access point');
     }
 }

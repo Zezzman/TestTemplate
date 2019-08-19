@@ -8,7 +8,7 @@ require_once(dirname(__DIR__) . '/bootstrap/app.php');
  * Create Application
  */
 $app = App::setup();
-setConfig('CLI', ['ARGV' => ($argv ?? [])]);
+setConfig('APP', ['ARGV' => ($argv ?? [])]);
 
 /**
  * Routes

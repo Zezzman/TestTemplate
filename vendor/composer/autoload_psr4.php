@@ -6,6 +6,10 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Portfolio\\Controllers\\' => array($baseDir . '/Portfolio/http/controllers'),
+    'Portfolio\\CLI\\' => array($baseDir . '/Portfolio/cli'),
+    'Portfolio\\API\\' => array($baseDir . '/Portfolio/http/api'),
+    'Portfolio\\' => array($baseDir . '/Portfolio'),
     'Collector\\Controllers\\' => array($baseDir . '/Collector/http/controllers'),
     'Collector\\CLI\\' => array($baseDir . '/Collector/cli'),
     'Collector\\API\\' => array($baseDir . '/Collector/http/api'),

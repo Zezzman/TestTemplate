@@ -3,6 +3,7 @@ namespace App;
 
 use App\Models\CLIRequestModel;
 use App\Helpers\DataCleanerHelper;
+use App\Interfaces\IRequest;
 use Exception;
 /**
  * Base class for cli controller classes
@@ -34,7 +35,7 @@ class CLIController
     /**
      * 
      */
-    public function respond(int $code, string $message = null, Exception $exception = null)
+    public static function respond(int $code, $message = null, IRequest $request = null, Exception $exception = null)
     {
         ob_start();
         ob_clean();
@@ -42,28 +43,29 @@ class CLIController
 
         if (isset($responses[$code])) {
             $response = $responses[$code];
-            http_response_code($code);
-            
             $body = [
                 'response' => $code,
                 'type' => $response,
-                'message' => DataCleanerHelper::cleanValue($message ?? '')
             ];
+            if (empty($message)) {
+                $body['message'] = $response;
+            } else if (is_string($message)) {
+                $body['message'] = DataCleanerHelper::cleanValue($message ?? '');
+            } else {
+                $message = DataCleanerHelper::cleanArray((array) $message);
+                $body['message'] = $message;
+            }
             if (! is_null($exception) && config('DEBUG')) {
-                $body['request'] = $this->request;
+                $body['request'] = $request;
                 $body['Exception'] = $exception;
                 if ($body['message'] === '') {
                     $body['message'] = DataCleanerHelper::cleanValue($exception->getMessage());
                 }
             }
-            echo json_encode($body);
+            if (! empty($body['message'])) {
+                echo config('App.NAME') . ":\n" . $body['message'] . "\n";
+            }
         }
-
         exit();
-    }
-    public static function respondView(int $code, string $message = null, HttpRequestModel $request = null, Exception $exception = null)
-    {
-        $controller = new self($request);
-        $controller->respond($code, $message, $exception);
     }
 }

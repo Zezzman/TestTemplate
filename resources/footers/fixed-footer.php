@@ -2,8 +2,8 @@
 	<hr class="mt-0">
 	<div class="col-12 mx-auto">
 		&copy;
-		<?php echo date('Y');?>
-		Francois Le Roux
+		<?= config('APP.COPYRIGHT.DATE');?>
+		<?= config('APP.AUTHOR');?>
 	</div>
 	<?php $this->footer('footer-scripts'); ?>
 </footer>

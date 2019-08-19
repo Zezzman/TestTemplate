@@ -136,12 +136,8 @@ class Controller implements IController
             }else{
                 $viewModel = new ViewModel();
             }
-            $viewModel->AddMessage(DataCleanerHelper::cleanValue($message));
-
-            if (! is_null($exception) && config('DEBUG')) {
-                if (is_null($message) || $message === '') {
-                    $viewModel->AddMessage(DataCleanerHelper::cleanValue($exception->getMessage()));
-                }
+            if (! empty($message)) {
+                $viewModel->AddMessage(DataCleanerHelper::cleanValue($message));
             }
 
             $name = config('PATHS.RESOURCES') . 'responses/' . $code;

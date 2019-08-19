@@ -32,6 +32,35 @@ final class EnvironmentProvider
         $this->getEnvironment();
     }
     /**
+     * Get configurations from configuration files
+     * within config folder
+     */
+    private function getConfig()
+    {
+        $this->addConfig('app');
+        $this->addConfig('permissions');
+        $this->addConfig('namespaces');
+        $this->addConfig('database');
+        $this->addConfig('paths');
+        $this->addConfig('links');
+    }
+    /**
+     * Get configurations from environment files
+     * within environment folder.
+     * 
+     * default.env.php is loaded by default.
+     * "APP_ENVIRONMENT".env.php is loaded second if it exist.
+     * 
+     * Set environment by setting a global apache variable
+     * "APP_ENVIRONMENT" to file name of environment file
+     */
+    private function getEnvironment()
+    {
+        $env = getenv('APP_ENVIRONMENT');
+        $this->addEnvironment('default');
+        $this->addEnvironment($env);
+    }
+    /**
      * Environment configuration settings
      * 
      * @param   string      $key                key name within configuration settings
@@ -155,35 +184,6 @@ final class EnvironmentProvider
             return true;
         }
         return false;
-    }
-    /**
-     * Get configurations from configuration files
-     * within config folder
-     */
-    private function getConfig()
-    {
-        $this->addConfig('app');
-        $this->addConfig('permissions');
-        $this->addConfig('namespaces');
-        $this->addConfig('database');
-        $this->addConfig('paths');
-        $this->addConfig('links');
-    }
-    /**
-     * Get configurations from environment files
-     * within environment folder.
-     * 
-     * default.env.php is loaded by default.
-     * "APP_ENVIRONMENT".env.php is loaded second if it exist.
-     * 
-     * Set environment by setting a global apache variable
-     * "APP_ENVIRONMENT" to file name of environment file
-     */
-    private function getEnvironment()
-    {
-        $env = getenv('APP_ENVIRONMENT');
-        $this->addEnvironment('default');
-        $this->addEnvironment($env);
     }
     /**
      * Add configurations from config files

@@ -58,7 +58,10 @@ class Router
         $uri = HTTPHelper::URI();
         $provider = new HttpRequestProvider($uri);
         // Load available request
-        require(config('PATHS.ROUTES') . 'web.php');
+        $web = config('PATHS.ROUTES') . 'web.php';
+        if (file_exists($web)) {
+            require($web);
+        }
         // Find matching request
         $this->request = $provider->matchRequests();
     }
@@ -69,7 +72,10 @@ class Router
     {
         $uri = HTTPHelper::URI();
         $provider = new HttpRequestProvider($uri);
-        require(config('PATHS.ROUTES') . 'api.php');
+        $api = config('PATHS.ROUTES') . 'api.php';
+        if (file_exists($api)) {
+            require($api);
+        }
         if ($this->requestMethod === 'OPTIONS') {
             header('Access-Control-Allow-Origin: https://localhost');
             header("Access-Control-Max-Age: 3600");
@@ -81,9 +87,12 @@ class Router
      */
     private function cliRoutes()
     {
-        $commands = config('CLI.ARGV');
+        $commands = config('APP.ARGV');
         $provider = new CLIRequestProvider($commands);
-        require(config('PATHS.ROUTES') . 'cli.php');
+        $cli = config('PATHS.ROUTES') . 'cli.php';
+        if (file_exists($cli)) {
+            require($cli);
+        }
         $this->request = $provider->matchRequests($commands);
     }
     /**

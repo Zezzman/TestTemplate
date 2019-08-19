@@ -22,7 +22,12 @@
             "Collector\\": "Collector/",
             "Collector\\Controllers\\": "Collector/http/controllers/",
             "Collector\\API\\": "Collector/http/api/",
-            "Collector\\CLI\\": "Collector/cli/"
+            "Collector\\CLI\\": "Collector/cli/",
+
+            "Portfolio\\": "Portfolio/",
+            "Portfolio\\Controllers\\": "Portfolio/http/controllers/",
+            "Portfolio\\API\\": "Portfolio/http/api/",
+            "Portfolio\\CLI\\": "Portfolio/cli/"
         }
     },
     "require" : {

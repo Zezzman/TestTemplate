@@ -1,10 +1,10 @@
 <head>
 	<meta charset="utf-8">
-	<title>Test Landing</title>
-	<meta name="test-token" content="<?= App\Providers\SessionProvider::token(); ?>">
+	<title><?= config('APP.NAME'); ?></title>
+	<meta name="csrf-token" content="<?= App\Providers\SessionProvider::token(); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="test project">
-	<meta name="author" content="Francois Le Roux">
+	<meta name="description" content="<?= config('APP.DESCRIPTION'); ?>">
+	<meta name="author" content="<?= config('APP.AUTHOR'); ?>">
 	<link rel="icon" href="<?= config('LINKS.IMAGES'); ?>favicon.png">
 
 	<link href="<?= config('LINKS.CSS'); ?>style.css" rel="stylesheet">
