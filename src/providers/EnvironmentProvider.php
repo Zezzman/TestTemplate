@@ -162,12 +162,12 @@ final class EnvironmentProvider
      */
     private function getConfig()
     {
-        $this->add($this->loadConfig('app'));
-        $this->add($this->loadConfig('permissions'));
-        $this->add($this->loadConfig('namespaces'));
-        $this->add($this->loadConfig('database'));
-        $this->add($this->loadConfig('paths'));
-        $this->add($this->loadConfig('links'));
+        $this->addConfig('app');
+        $this->addConfig('permissions');
+        $this->addConfig('namespaces');
+        $this->addConfig('database');
+        $this->addConfig('paths');
+        $this->addConfig('links');
     }
     /**
      * Get configurations from environment files
@@ -182,8 +182,16 @@ final class EnvironmentProvider
     private function getEnvironment()
     {
         $env = getenv('APP_ENVIRONMENT');
-        $this->add($this->loadEnvironment('default'));
-        $this->add($this->loadEnvironment($env));
+        $this->addEnvironment('default');
+        $this->addEnvironment($env);
+    }
+    /**
+     * Add configurations from config files
+     * within environment folder.
+     */
+    public function addConfig($environment)
+    {
+        return $this->add($this->loadConfig($environment));
     }
     /**
      * Add configurations from environment files
@@ -191,13 +199,7 @@ final class EnvironmentProvider
      */
     public function addEnvironment($environment)
     {
-        $configs = $this->loadEnvironment($environment);
-        if (! empty($configs)) {
-            if ($this->add($configs)) {
-                return $configs;
-            }
-        }
-        return [];
+        return $this->add($this->loadEnvironment($environment));
     }
     /**
      * Load configurations from configuration file
@@ -206,7 +208,7 @@ final class EnvironmentProvider
      * 
      * @return  array        return load configurations
      */
-    private function loadConfig(string $name)
+    public function loadConfig(string $name)
     {
         if (! empty($name)) {
             $name = dirname(__DIR__) . '/../configs/' . $name . '.php';
