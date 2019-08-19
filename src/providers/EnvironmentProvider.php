@@ -82,7 +82,6 @@ final class EnvironmentProvider
                     $this->setKey($configs, $index, $value);
                 }
             }
-            $this->configs = $configs;
             return true;
         }
         return false;
@@ -151,7 +150,7 @@ final class EnvironmentProvider
      */
     private function add(array $configs)
     {
-        if (is_array($configs) && ! empty($configs)) {
+        if (! empty($configs)) {
             $this->configs = $this->mergeRecursive($this->configs, $configs);
             return true;
         }
@@ -229,16 +228,7 @@ final class EnvironmentProvider
      */
     public function loadEnvironment(string $name)
     {
-        if (! empty($name)) {
-            $name = dirname(__DIR__) . '/../configs/environments/' . $name . '.php';
-            if (file_exists($name)) {
-                $config = require($name);
-                if (is_array($config)) {
-                    return $config;
-                }
-            }
-        }
-        return [];
+        return $this->loadConfig('environments/' . $name);
     }
     /**
      * DNS
