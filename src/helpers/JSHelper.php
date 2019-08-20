@@ -3,6 +3,7 @@ namespace App\Helpers;
 
 use App\Helper;
 use App\Helpers\QueryHelper;
+use App\Helpers\FileHelper;
 /**
  * 
  */
@@ -40,8 +41,14 @@ final class JSHelper extends Helper
                 if ($script['charset'] !== '') {
                     $script['charset'] = 'charset="' . $script['charset'] . '"';
                 }
+                if (isset($script['path']) && ! empty($script['path'])) {
+                    $file = FileHelper::loadFile($script['path']);
+                    if (! empty($file)) {
+                        $script['code'] .= $file;
+                    }
+                }
                 // Create html
-                $html .= QueryHelper::insertCodes($script, $style);
+                $html .= QueryHelper::scanCodes($script, $style);
             }
         }
         

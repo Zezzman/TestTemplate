@@ -48,12 +48,12 @@ class Controller implements IController
      * 
      * @return  View    return new created view
      */
-    public function view(string $name = '', IViewModel $model = null)
+    public function view(string $name = '', IViewModel $model = null, array $bag = [])
     {
         if (is_null($this->view)) {
             if (! empty($name)) {
                 try {
-                    $this->view = View::create($this, 'views/'. $name, $model, $this->pauseRender);
+                    $this->view = View::create($this, 'views/'. $name, $model, $bag, $this->pauseRender);
                 } catch (RespondingException $e) {
                     $this->error($e->respondCode(), $e);
                 } catch (PDOException $e) {

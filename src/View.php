@@ -16,15 +16,16 @@ class View
     /**
      * 
      */
-    public function __construct(IController $controller, string $name, IViewModel $model = null)
+    public function __construct(IController $controller, string $name, IViewModel $model = null, array $bag = [])
     {
         $service = new ViewFactory();
         $this->viewData = $service->createView($controller, $name, $model);
+        $this->viewData->bag = $bag;
     }
     /**
      * 
      */
-    public static function create(IController $controller, string $name, IViewModel $model = null, bool $pauseRender = false)
+    public static function create(IController $controller, string $name, IViewModel $model = null, array $bag = [], bool $pauseRender = false)
     {
         $view = new self($controller, $name, $model);
 

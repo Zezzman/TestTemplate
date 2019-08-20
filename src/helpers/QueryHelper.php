@@ -73,19 +73,23 @@ final class QueryHelper extends Helper
     }
     public static function scanCodes($codes, string $subject, array $defaults = [], bool $list = false, int $listLength = 0, bool $allowEmpty = false)
     {
-        $codes = (array)$codes;
+        if (is_string($codes) || is_numeric($codes)) {
+            $codes = ['content' => $codes];
+        } else {
+            $codes = (array)$codes;
+        }
         $insertCount = 0;
         
         $pattern = "/({(.*?)})/";
         $callback = function ($match) use ($codes, $defaults, &$insertCount) {
             if (isset($codes[$match[2]])
-            && (is_string ($codes[$match[2]])
+            && (is_string($codes[$match[2]]) && ! empty($codes[$match[2]])
             || is_numeric($codes[$match[2]]))) {
                 $insertCount++;
                 return $codes[$match[2]] ?? '';
             } else {
                 if (isset($defaults[$match[2]])
-                && (is_string ($defaults[$match[2]])
+                && (is_string($defaults[$match[2]]) && ! empty($defaults[$match[2]])
                 || is_numeric($defaults[$match[2]]))) {
                     return $defaults[$match[2]];
                 }

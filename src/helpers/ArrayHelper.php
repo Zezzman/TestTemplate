@@ -175,7 +175,7 @@ final class ArrayHelper extends Helper
      * 
      * @return	array		arrays with new items added
      */
-    public static function addToEntries(array $entries, $append, $params = array(), bool $recursive = true)
+    public static function addToEntries(array $entries, $append, $params = [], bool $recursive = true)
     {
         if (empty($append)) {
             return $entries;
@@ -185,7 +185,9 @@ final class ArrayHelper extends Helper
             foreach ($entries as $key => $entry) {
                 if (is_array($append)) {
                     foreach ($append as $index => $item) {
-                        $newEntries[$key][$index] = $item;
+                        if (is_array($newEntries[$key])) {
+                            $newEntries[$key][$index] = $item;
+                        }
                     }
                 } else {
                     $newEntries[$key][] = $append;

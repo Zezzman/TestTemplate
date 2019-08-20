@@ -2,29 +2,24 @@
 namespace App\Helpers;
 
 use App\Helper;
+use App\Helper\QueryHelper;
 /**
  * 
  */
 final class FileHelper extends Helper
 {
     /**
-     * 
+     * Loads content of file and scans for codes
      */
-    public static function requireFile(string $path)
+    public static function loadFile(string $path, array $codes = null, array $defaults = [])
     {
         if (file_exists($path) && is_file($path)) {
-            return require_once($path);
-        } else {
-            throw new Exception("File not found: ({$path})");
-        }
-    }
-    /**
-     * 
-     */
-    public static function loadFile(string $path)
-    {
-        if (file_exists($path) && is_file($path)) {
-            return include($path);
+            if (! is_null($codes)) {
+                $content = file_get_contents($path);
+                return QueryHelper::scanCodes($codes, $content, $defaults);
+            } else {
+                return file_get_contents($path);
+            }
         } else {
             return false;
         }

@@ -19,16 +19,37 @@ class ViewModel implements IViewModel
         }
         return QueryHelper::scanCodes(ArrayHelper::outerMerge($this->messages), $style, [], true, $length);
     }
-    public function addMessage(string $message, string $name = '', array $attributes = null)
+    public function addMessage($message, string $name = '', array $attributes = null)
     {
         if (empty($name)) {
             $name = 'default';
         }
-        $message = ['name' => $name, 'message' => $message];
-        if (! is_null($attributes)) {
-            $message = array_merge($message, $attributes);
+        if (is_string($message) || is_numeric($message)) {
+            $message = ['name' => $name, 'message' => $message];
+            if (! is_null($attributes)) {
+                $message = array_merge($message, $attributes);
+            }
+            $this->messages[$name][] = $message;
+        } else {
+            $groups = (array) $message;
+            foreach ($groups as $key => $content) {
+                $message = [];
+                if (is_string($content) || is_numeric($content)) {
+                    $message['name'] = $name;
+                    $message['message'] = $content;
+                    if (! is_null($attributes)) {
+                        $message = array_merge($message, $attributes);
+                    }
+                } else {
+                    $message = (array) $content;
+                    $message['name'] = $name;
+                    if (! is_null($attributes)) {
+                        $message = array_merge($message, $attributes);
+                    }
+                }
+                $this->messages[$name][] = $message;
+            }
         }
-        $this->messages[$name][] = $message;
     }
     public function hasMessagesWithName(string $name)
     {
