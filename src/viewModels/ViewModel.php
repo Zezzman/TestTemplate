@@ -15,9 +15,9 @@ class ViewModel implements IViewModel
     public function Messages(string $name = '', string $style = "{message}<br>", int $length = 0)
     {
         if ($name !== '') {
-            return QueryHelper::insertCodes($this->messagesWithName($name) ?? [], $style, true, $length);
+            return QueryHelper::scanCodes($this->messagesWithName($name) ?? [], $style, [], true, $length);
         }
-        return QueryHelper::insertCodes(ArrayHelper::outerMerge($this->messages), $style, true, $length);
+        return QueryHelper::scanCodes(ArrayHelper::outerMerge($this->messages), $style, [], true, $length);
     }
     public function addMessage(string $message, string $name = '', array $attributes = null)
     {

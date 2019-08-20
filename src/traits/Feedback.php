@@ -28,7 +28,7 @@ trait Feedback
     }
     public function printFeedback(string $style = "{message}\n", int $length = 0)
     {
-        return QueryHelper::insertCodes($this->feedbackWithType(0) ?? [], $style, true, $length);
+        return QueryHelper::scanCodes($this->feedbackWithType(0) ?? [], $style, [], true, $length);
     }
     public function hasFeedback()
     {

@@ -76,10 +76,16 @@ class View
     {
         // file local pre-defined variables
         $viewData = $this->viewData ?? null;
-        $layoutData = $this->viewData->layout ?? null;
+        $layout = $this->viewData->layout ?? null;
         $model = $this->viewData->model ?? null;
         if (is_null($bag)) {
-            $bag = [];
+            $viewData;
+            if (! is_null($viewData)
+            && ! is_null($viewData->bag)) {
+                $bag = &$this->viewData->bag;
+            } else {
+                $bag = [];
+            }
         }
 
         if (! empty($path) && file_exists($path)) {

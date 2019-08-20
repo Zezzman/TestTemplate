@@ -5,14 +5,6 @@
 if (isset($bag['links'])) {
     $uri = $this->viewData->controller->getRequest()->uri;
     $links = $bag['links'];
-    $content = ('<nav class="navbar navbar-expand-md navbar-dark bg-dark">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" 
-            data-target="#navbar-collapse-div" aria-controls="navbar-collapse-div"
-            aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbar-collapse-div">{left}{right}</div>
-        </nav>');
     $leftLinks = [];
     $rightLinks = [];
     foreach ($links as $name => $link) {
@@ -47,6 +39,16 @@ if (isset($bag['links'])) {
             '<li class="nav-item {active}"><a class="nav-link" href="{link}">{name}</a></li>', true) .
         '</ul>';
     }
-    echo App\Helpers\QueryHelper::insertCodes(['left' => $left, 'right' => $right], $content);
+    echo (
+        '<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" 
+                data-target="#navbar-collapse-div" aria-controls="navbar-collapse-div"
+                aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>'
+            . App\Helpers\QueryHelper::insertCodes(['left' => $left, 'right' => $right],
+            ('<div class="collapse navbar-collapse" id="navbar-collapse-div">{left}{right}</div>'))
+        . '</nav>'
+    );
 }
 ?>
