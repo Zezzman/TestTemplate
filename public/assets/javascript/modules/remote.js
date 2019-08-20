@@ -23,17 +23,26 @@ function RemoteAPI(){
             }
         });
     };
-    var Listen = function (uri, data, method = "GET", interval = 5000, success = null, error = null) {
-        var Action = function () {
+    var Listen = function (uri, data, method = "GET", interval = 5000, success = null, error = null, keepAlive = false, waitForResponse = true, threshold = 5) {
+        var Action = function (fallback) {
+            if (waitForResponse) {
+                listeners[uri] = true;
+            }
             Call(uri, data, method, function (data, response, status) {
+                listeners[uri] = fallback;
                 if (success)
-                    return success(data, response, status);
+                    success(data, response, status);
             }, function (response) {
-                CloseListener(uri);
+                if (! keepAlive) {
+                    CloseListener(uri);
+                } else {
+                    listeners[uri] = fallback;
+                }
                 if (error)
                     error(response);
             });
         };
+        thresholdCount = threshold;
         if (listeners.hasOwnProperty(uri)) {
             Action();
             listeners[uri] = Action;
@@ -42,7 +51,20 @@ function RemoteAPI(){
             Wait(interval, function () {
                 if (listeners.hasOwnProperty(uri)
                 && listeners[uri]) {
-                    return listeners[uri]();
+                    if (listeners[uri] !== true) {
+                        thresholdCount = threshold;
+                        listeners[uri](Action);
+                    } else {
+                        if (thresholdCount > 0) {
+                            thresholdCount--;
+                        } else {
+                            if (error)
+                                error(false);
+                            listeners[uri] = false;
+                            return false;
+                        }
+                    }
+                    return true;
                 } else {
                     return false;
                 }
