@@ -88,7 +88,7 @@ final class SessionProvider
     }
     public static function token()
     {
-        return self::$instance->token;
+        return self::$instance->token ?? null;
     }
     public static function hasSession()
     {

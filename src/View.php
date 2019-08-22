@@ -80,7 +80,6 @@ class View
         $layout = $this->viewData->layout ?? null;
         $model = $this->viewData->model ?? null;
         if (is_null($bag)) {
-            $viewData;
             if (! is_null($viewData)
             && ! is_null($viewData->bag)) {
                 $bag = &$this->viewData->bag;
@@ -127,8 +126,8 @@ class View
         if ($view !== false) {
             // render layout
             if (! is_null($this->viewData->layout)) {
-                $this->viewData->body = $body;
                 // include body within layout
+                $this->viewData->body = $body;
                 $layout = $this->loadFile($this->viewData->layout ?? '');
                 $content = ob_get_clean();
                 if ($layout) {

@@ -11,6 +11,7 @@ final class EnvironmentProvider
 {
     private static $instance = null;
     public $configs = [];
+    public $files = [];
 
     private function __construct() {}
 
@@ -32,6 +33,31 @@ final class EnvironmentProvider
         $this->getEnvironment();
     }
     /**
+     * Update Configs
+     */
+    public function update(array $files = null)
+    {
+        $configs = [];
+        if (is_null($files)) {
+            foreach ($this->files as $name => $state) {
+                if ($state === 1) {
+                    $configs[$name] = $this->loadConfig($name);
+                }
+            }
+            foreach ($configs as $key => $entry) {
+                $configs[$key] = $this->add($entry);
+            }
+        } else {
+            foreach ($files as $name) {
+                $configs[$name] = $this->loadConfig($name);
+            }
+            foreach ($configs as $key => $entry) {
+                $configs[$key] = $this->add($entry);
+            }
+        }
+        return $configs;
+    }
+    /**
      * Get configurations from configuration files
      * within config folder
      */
@@ -43,6 +69,7 @@ final class EnvironmentProvider
         $this->addConfig('database');
         $this->addConfig('paths');
         $this->addConfig('links');
+        $this->addConfig('layout');
     }
     /**
      * Get configurations from environment files
@@ -211,11 +238,14 @@ final class EnvironmentProvider
     public function loadConfig(string $name)
     {
         if (! empty($name)) {
-            $name = dirname(__DIR__) . '/../configs/' . $name . '.php';
-            if (file_exists($name)) {
-                $config = require($name);
+            $path = dirname(__DIR__) . '/../configs/' . $name . '.php';
+            if (file_exists($path)) {
+                $config = require($path);
                 if (is_array($config)) {
+                    $this->files[$name] = 1;
                     return $config;
+                } else {
+                    $this->files[$name] = 0;
                 }
             }
         }
@@ -292,7 +322,7 @@ final class EnvironmentProvider
             return $default;
         }
 
-        $constant = ArrayHelper::deepSearch($configs, strtoupper($key));
+        $constant = ArrayHelper::deepSearch($configs, strtoupper($key), '.');
         if (is_null($constant)) {
             return $default;
         } else {

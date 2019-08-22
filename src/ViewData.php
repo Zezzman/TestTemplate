@@ -3,6 +3,7 @@ namespace App;
 
 use App\Interfaces\IView;
 use App\Interfaces\IController;
+use App\Helpers\DataCleanerHelper;
 /**
  * 
  */
@@ -25,15 +26,26 @@ class ViewData implements IView
     {
         $this->name = $name;
         $this->controller = $controller;
+        if (config('LAYOUT.DEFAULT') !== false) {
+            $this->setLayout(config('LAYOUT.DEFAULT'));
+        }
     }
     /**
      * 
      */
     public function setLayout(string $name)
     {
-        $path = config('PATHS.RESOURCES') . "layouts/{$name}.php";
-        if (file_exists($path) && is_file($path)) {
+        $name = trim($name, '/');
+        $name = DataCleanerHelper::cleanValue($name);
+        $path = "/{$name}.php";
+
+        if (file_exists($path)) {
             $this->layout = $path;
+        } else {
+            $path = config('PATHS.RESOURCES') . "layouts/{$name}.php";
+            if (file_exists($path)) {
+                $this->layout = $path;
+            }
         }
     }
     /**

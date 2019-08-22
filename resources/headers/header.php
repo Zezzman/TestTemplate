@@ -5,9 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="<?= config('APP.DESCRIPTION'); ?>">
 	<meta name="author" content="<?= config('APP.AUTHOR'); ?>">
-	<link rel="icon" href="<?= config('LINKS.IMAGES'); ?>favicon.png">
 
-	<link href="<?= config('LINKS.CSS'); ?>style.css" rel="stylesheet">
-
-	<?= App\Helpers\JSHelper::varPrint(['domain' => '"'. config('LINKS.PUBLIC') . '"']); ?>
+	<?= App\Helpers\FileHelper::loadLinks((array) config('LAYOUT.HEADER.LINKS')); ?>
+	<?= App\Helpers\FileHelper::loadScripts((array) config('LAYOUT.HEADER.SCRIPTS')); ?>
 </head>

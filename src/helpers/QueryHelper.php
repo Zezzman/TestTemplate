@@ -176,7 +176,7 @@ final class QueryHelper extends Helper
                     if (is_string($codes) || is_numeric($codes)) {
                         $codes = [
                             'KEY' => $key,
-                            'VALUE' => $commands
+                            'VALUE' => $codes
                         ];
                         $message .= $mapCodes();
                     }

@@ -2,7 +2,7 @@
 namespace App\Helpers;
 
 use App\Helper;
-use App\Helper\QueryHelper;
+use App\Helpers\QueryHelper;
 /**
  * 
  */
@@ -58,5 +58,83 @@ final class FileHelper extends Helper
         } else {
             return false;
         }
+    }
+    /**
+     * Links tags
+     */
+    public static function loadLinks(array $links)
+    {
+        $html = '';
+        $style = '<link {href} {type} {rel} {media}>';
+
+        foreach ($links as $link) {
+            if (is_array($link)) {
+                // Required fields
+                $link['href'] = $link['href'] ?? '';
+                $link['type'] = $link['type'] ?? '';
+                $link['rel'] = $link['rel'] ?? '';
+                $link['media'] = $link['media'] ?? '';
+                // Format fields
+                if ($link['href'] !== '') {
+                    $link['href'] = 'href="' . $link['href'] . '"';
+                }
+                if ($link['type'] !== '') {
+                    $link['type'] = 'type="' . $link['type'] . '"';
+                }
+                if ($link['rel'] !== '') {
+                    $link['rel'] = 'rel="' . $link['rel'] . '"';
+                }
+                if ($link['media'] !== '') {
+                    $link['media'] = 'media="' . $link['media'] . '"';
+                }
+                // Create html
+                $html .= QueryHelper::scanCodes($link, $style);
+            }
+        }
+        
+        return $html;
+    }
+    /**
+     * Script tags
+     */
+    public static function loadScripts(array $scripts)
+    {
+        $html = '';
+        $style = '<script {src} {async} {defer} {type} {charset}>{code}</script>';
+
+        foreach ($scripts as $script) {
+            if (is_array($script)) {
+                // Required fields
+                $script['async'] = (in_array('async', $script)) ? 'async' : '';
+                $script['defer'] = (in_array('defer', $script)) ? 'defer' : '';
+                $script['charset'] = $script['charset'] ?? '';
+                $script['type'] = $script['type'] ?? '';
+                $script['code'] = $script['code'] ?? '';
+                $script['src'] = $script['src'] ?? '';
+                // Format fields
+                if ($script['src'] !== '') {
+                    $script['src'] = 'src="' . $script['src'] . '"';
+                }
+                if ($script['type'] !== '') {
+                    $script['type'] = 'type="' . $script['type'] . '"';
+                }
+                if ($script['charset'] !== '') {
+                    $script['charset'] = 'charset="' . $script['charset'] . '"';
+                }
+                if (isset($script['var']) && ! empty($script['var'])) {
+                    $script['code'] .= QueryHelper::scanCodes($script['var'], 'var {KEY} = {VALUE};', [], true) . "\n";
+                }
+                if (isset($script['path']) && ! empty($script['path'])) {
+                    $file = FileHelper::loadFile($script['path']);
+                    if (! empty($file)) {
+                        $script['code'] .= $file;
+                    }
+                }
+                // Create html
+                $html .= QueryHelper::scanCodes($script, $style);
+            }
+        }
+        
+        return $html;
     }
 }
