@@ -2,6 +2,9 @@
 namespace App\Helpers;
 
 use App\Helper;
+use App\Helpers\ArrayHelper;
+use Closure;
+
 /**
  * 
  */
@@ -78,50 +81,106 @@ final class QueryHelper extends Helper
         } else {
             $codes = (array)$codes;
         }
-        $insertCount = 0;
         
+        $counter = 0;
         $pattern = "/({(.*?)})/";
-        $callback = function ($match) use ($codes, $defaults, &$insertCount) {
-            if (isset($codes[$match[2]])
-            && (is_string($codes[$match[2]]) && ! empty($codes[$match[2]])
-            || is_numeric($codes[$match[2]]))) {
-                $insertCount++;
-                return $codes[$match[2]] ?? '';
+
+        $callback = function ($match) use (&$codes, $defaults, &$counter) {
+            $key = $match[2];
+            $item = $codes[$key] ?? null;
+            if (is_string($item) && ! empty($item)
+            || is_numeric($item)) {
+                $counter++;
+                return $item;
             } else {
-                if (isset($defaults[$match[2]])
-                && (is_string($defaults[$match[2]]) && ! empty($defaults[$match[2]])
-                || is_numeric($defaults[$match[2]]))) {
-                    return $defaults[$match[2]];
+                $item = $defaults[$key] ?? null;
+                if (is_string($item) && ! empty($item)
+                || is_numeric($item)) {
+                    return $item;
                 }
             }
         };
         
         if ($list) {
-            $message = '';
-            $codeCount = count($codes);
-            $keys = array_keys($codes);
-            for ($i = 0; $i < $codeCount; $i++) {
-                if ($listLength == 0 || $listLength > 0 && $listLength > $i 
-                || $listLength < 0 && ($codeCount + $listLength) == $i) {
-                    $key = $keys[$i];
-                    $commands = (is_object($codes[$key]))? (array) $codes[$key]: $codes[$key];
-                    if (is_array($commands)) {
-                        $commands['KEY'] = $key;
-                        $message .= self::scanCodes($commands, $subject, $defaults, false, 0, $allowEmpty);
-                    } else {
-                        if (is_string($commands) || is_numeric($commands)) {
-                            $message .= self::scanCodes([
-                                'KEY' => $key,
-                                'VALUE' => $commands
-                            ], $subject, $defaults, false, 0, $allowEmpty);
-                        }
-                    }
+            $message = self::mapCodesList($codes, $subject, $pattern, $callback, $listLength, $allowEmpty, $counter);
+        } else {
+            $counter = 0;
+            $message = preg_replace_callback($pattern, $callback, $subject);
+            if ($allowEmpty === true || $counter === 0) {
+                $message = '';
+            }
+        }
+        return $message;
+    }
+    public static function deepScanCodes($codes, string $subject, array $defaults = [], bool $list = false, int $listLength = 0, bool $allowEmpty = false)
+    {
+        if (is_string($codes) || is_numeric($codes)) {
+            $codes = ['content' => $codes];
+        } else {
+            $codes = (array)$codes;
+        }
+        
+        $counter = 0;
+        $pattern = "/({(.*?)})/";
+
+        $callback = function ($match) use (&$codes, $defaults, &$counter) {
+            $key = $match[2];
+            $item = ArrayHelper::deepSearch($codes, $key, '.');
+            if (is_string($item) && ! empty($item)
+            || is_numeric($item)) {
+                $counter++;
+                return $item;
+            } else {
+                $item = ArrayHelper::deepSearch($defaults, $key, '.');
+                if (is_string($item) && ! empty($item)
+                || is_numeric($item)) {
+                    return $item;
                 }
             }
+        };
+        
+        if ($list) {
+            $message = self::mapCodesList($codes, $subject, $pattern, $callback, $listLength, $allowEmpty, $counter);
         } else {
+            $counter = 0;
             $message = preg_replace_callback($pattern, $callback, $subject);
-            if ($allowEmpty === false && $insertCount == 0) {
+            if ($allowEmpty === true || $counter === 0) {
                 $message = '';
+            }
+        }
+        return $message;
+    }
+    public static function mapCodesList(array &$codes, string $subject, string $pattern, Closure $callback, int $listLength = 0, bool $allowEmpty = false, int &$counter = 0)
+    {
+        $mapCodes = function () use ($pattern, $callback, $subject, $allowEmpty, &$counter) {
+            $counter = 0;
+            $message = preg_replace_callback($pattern, $callback, $subject);
+            if ($allowEmpty === true || $counter !== 0) {
+                return $message;
+            }
+        };
+        
+        $message = '';
+        $commands = $codes;
+        $commandCount = count($commands);
+        $keys = array_keys($commands);
+        for ($i = 0; $i < $commandCount; $i++) {
+            if ($listLength == 0 || $listLength > 0 && $listLength > $i 
+            || $listLength < 0 && ($commandCount + $listLength) == $i) {
+                $key = $keys[$i];
+                $codes = (is_object($commands[$key]))? (array) $commands[$key]: $commands[$key];
+                if (is_array($codes)) {
+                    $codes['KEY'] = $key;
+                    $message .= $mapCodes();
+                } else {
+                    if (is_string($codes) || is_numeric($codes)) {
+                        $codes = [
+                            'KEY' => $key,
+                            'VALUE' => $commands
+                        ];
+                        $message .= $mapCodes();
+                    }
+                }
             }
         }
         return $message;

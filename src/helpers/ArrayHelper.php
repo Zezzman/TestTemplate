@@ -2,6 +2,8 @@
 namespace App\Helpers;
 
 use App\Helper;
+use Closure;
+
 /**
  * 
  */
@@ -157,7 +159,7 @@ final class ArrayHelper extends Helper
         return $differences;
     }
     /**
-     * addToEntries returns a new array with items added to each entry
+     * ddToEntries returns a new array with items added to each entry
      * 
      * Compare the array against the parameters.
      * - if empty param array then only items with true values return.
@@ -355,7 +357,7 @@ final class ArrayHelper extends Helper
      * @param       array           $array          array to search
      * @param       string          $index          indexString that contains path to key within array
      *                                              e.g. 'firstKey.secondKey.wantedKey'
-     * @return      mix             value of index or null if key is not found
+     * @return      array             value of index or null if key is not found
      */
     public static function deepSearch($array, string $index, string $delimiter = '.')
     {
@@ -378,5 +380,112 @@ final class ArrayHelper extends Helper
             }
         }
         return null;
+    }
+    /**
+     * Search deep into array
+     * 
+     * @param       array           $array          array to search
+     * @param       string          $index          indexString that contains path to key within array
+     *                                              e.g. 'firstKey.secondKey.wantedKey'
+     * @return      array             value of index or null if key is not found
+     */
+    private static function &deepSearchRef(&$array, string $index, string $delimiter = '.')
+    {
+        if (! empty($index)) {
+            $counter = 0;
+            $index = trim($index, $delimiter);
+            $indexes = explode($delimiter, $index);
+            $arrays = [];
+            $empty = null;
+            if (count($indexes) > 0) {
+                $arrays[] = &$array;
+                foreach ($indexes as $key) {
+                    if (is_array($arrays[$counter])) {
+                        if (isset($arrays[$counter][$key])) {
+                            $arrays[$counter + 1] = &$arrays[$counter][$key];
+                            $counter++;
+                        } else {
+                            return $empty;
+                        }
+                    } else {
+                        return $empty;
+                    }
+                }
+                return $arrays[$counter];
+            }
+        }
+        return $empty;
+    }
+    /**
+     * searchArrayMap map the searched array
+     * 
+     * @return	array		arrays that match parameters given
+     */
+    public static function searchArrayMap(array &$array, string $search, Closure $callback = null)
+    {
+        $delimiter = '/';
+        
+        $search = trim($search, $delimiter);
+        $position = strpos($search, '*');
+        if ($position !== false) {
+            $searchFirst = substr($search, 0, $position);
+            $searchFirst = trim($searchFirst, $delimiter);
+            $nextSearch = substr($search, $position + 1, strlen($search));
+            $nextSearch = trim($nextSearch, $delimiter);
+            if ($searchFirst == "" && $nextSearch == "") {
+                foreach ($array as $index => $item) {
+                    $return = $callback($index, $item);
+                    if (! is_null($return)) {
+                        $array[$index] = $return;
+                    }
+                }
+                return $array;
+            } else if ($searchFirst == "") {
+                foreach ($array as $index => $item) {
+                    self::searchArrayMap($array[$index], $nextSearch, $callback);
+                }
+                return $array;
+            } else {
+                $selectedArray = &self::deepSearchRef($array, $searchFirst, $delimiter);
+                if (! is_null($selectedArray)) {
+                    if (is_array($selectedArray)) {
+                        if ($nextSearch == "") {
+                            foreach ($selectedArray as $index => $item) {
+                                $return = $callback($index, $item);
+                                if (! is_null($return)) {
+                                    $selectedArray[$index] = $return;
+                                }
+                            }
+                            return $array;
+                        } else {
+                            foreach ($selectedArray as $index => $item) {
+                                self::searchArrayMap($selectedArray[$index], $nextSearch, $callback);
+                            }
+                            return $array;
+                        }
+                    }
+                    
+                }
+                return $array;
+            }
+        } else {
+            $selectedArray = &self::deepSearchRef($array, $search, $delimiter);
+            if (! is_null($selectedArray)) {
+                if (is_array($selectedArray)) {
+                    foreach ($selectedArray as $index => $item) {
+                        $return = $callback($index, $item);
+                        if (! is_null($return)) {
+                            $selectedArray[$index] = $return;
+                        }
+                    }
+                } else {
+                    $return = $callback($search, $selectedArray);
+                    if (! is_null($return)) {
+                        $selectedArray = $return;
+                    }
+                }
+            }
+            return $array;
+        }
     }
 }
