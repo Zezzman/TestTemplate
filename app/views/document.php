@@ -1,7 +1,3 @@
-<?php
-    $this->layout('layout');
-    $this->section('mainNav');
-?>
 <div class="container">
     <div class="row">
         <div class="col-12">

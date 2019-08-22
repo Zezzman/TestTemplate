@@ -1,7 +1,3 @@
-<?php
-    $this->layout('fill');
-    $this->section('mainNav');
-?>
 <div class="container">
     <div class="row text-center vh-90">
         <div class="col-12 m-auto">

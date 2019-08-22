@@ -48,7 +48,7 @@ class View
     /**
      * 
      */
-    private function layout(string $layout)
+    private function layout(string $layout = null)
     {
         $this->viewData->setLayout($layout);
     }
@@ -128,7 +128,7 @@ class View
             if (! is_null($this->viewData->layout)) {
                 // include body within layout
                 $this->viewData->body = $body;
-                $layout = $this->loadFile($this->viewData->layout ?? '');
+                $layout = $this->loadFile($this->viewData->layout ?? '', []);
                 $content = ob_get_clean();
                 if ($layout) {
                     $this->viewData->rendered = true;

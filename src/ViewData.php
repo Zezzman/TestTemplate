@@ -33,18 +33,22 @@ class ViewData implements IView
     /**
      * 
      */
-    public function setLayout(string $name)
+    public function setLayout(string $name = null)
     {
-        $name = trim($name, '/');
-        $name = DataCleanerHelper::cleanValue($name);
-        $path = "/{$name}.php";
-
-        if (file_exists($path)) {
-            $this->layout = $path;
+        if (is_null($name)) {
+            $this->layout = null;
         } else {
-            $path = config('PATHS.RESOURCES') . "layouts/{$name}.php";
+            $name = trim($name, '/');
+            $name = DataCleanerHelper::cleanValue($name);
+            $path = "/{$name}.php";
+    
             if (file_exists($path)) {
                 $this->layout = $path;
+            } else {
+                $path = config('PATHS.RESOURCES') . "layouts/{$name}.php";
+                if (file_exists($path)) {
+                    $this->layout = $path;
+                }
             }
         }
     }
