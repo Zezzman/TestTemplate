@@ -9,7 +9,7 @@ use App\Helpers\DataCleanerHelper;
  */
 class ViewData implements IView
 {
-    public $rendered = false;
+    public $hasRendered = false;
     public $name = null;
     public $path = null;
     public $layout = null;

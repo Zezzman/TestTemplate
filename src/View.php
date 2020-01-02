@@ -104,9 +104,9 @@ class View
     /**
      * 
      */
-    public function rendered()
+    public function hasRendered()
     {
-        return $this->viewData->rendered;
+        return $this->viewData->hasRendered;
     }
     /**
      * 
@@ -115,7 +115,7 @@ class View
     {
         if (is_null($this->viewData)
         || ! $this->viewData->valid()
-        || $this->viewData->rendered == true) {
+        || $this->viewData->hasRendered == true) {
             return false;
         }
 
@@ -131,14 +131,14 @@ class View
                 $layout = $this->loadFile($this->viewData->layout ?? '', []);
                 $content = ob_get_clean();
                 if ($layout) {
-                    $this->viewData->rendered = true;
+                    $this->viewData->hasRendered = true;
                     // print view
                     echo $content . $this->viewData->append;
                 } else {
                     ob_clean();
                 }
             } else {
-                $this->viewData->rendered = true;
+                $this->viewData->hasRendered = true;
                 // print view
                 echo $body;
                 ob_flush();
