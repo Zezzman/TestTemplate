@@ -9,29 +9,29 @@ interface IDatabase
     /**
      * 
      */
-    public static function instance();
+    static function instance();
     /**
      * 
      */
-    public static function connect();
+    static function connect();
     /**
      * 
      */
-    public static function DB();
+    static function DB();
     /**
      * 
      */
-    public static function close();
+    static function close();
     /**
      * 
      */
-    public static function prepare($query, array $params = null, int $fetch = null, bool $group = false);
+    static function prepare($query, array $params = null, int $fetch = null, bool $group = false);
     /**
      * 
      */
-    public static function lastID();
+    static function lastID();
     /**
      * 
      */
-    public static function logError($user_id, $message, $ip = '');
+    static function logError($user_id, $message, $ip = '');
 }

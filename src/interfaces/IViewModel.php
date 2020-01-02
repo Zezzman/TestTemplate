@@ -5,5 +5,9 @@ namespace App\Interfaces;
  */
 interface IViewModel
 {
-    public function Messages();
+    function Messages();
+    function addMessage($message);
+    function hasMessagesWithName(string $name);
+    function messagesWithName(string $name);
+    function convertToMessage($feedback);
 }

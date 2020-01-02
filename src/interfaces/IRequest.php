@@ -5,7 +5,7 @@ namespace App\Interfaces;
  */
 interface IRequest
 {
-    public function valid();
+    function valid();
 
-    public static function empty();
+    static function empty();
 }

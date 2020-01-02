@@ -5,5 +5,5 @@ namespace App\Interfaces;
  */
 interface IUser
 {
-    public function hasRequiredUpdateFields();
+    function hasRequiredUpdateFields();
 }
