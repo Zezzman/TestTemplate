@@ -34,6 +34,12 @@ final class App
             $instance = &self::$instance;
             $instance = new self();
 
+            // Default debug output
+            if (getenv('DEBUG') == true) {
+                error_reporting(E_ALL);
+                ini_set('display_errors', E_ALL);
+            }
+
             // Load configurations
             $instance->environment = EnvironmentProvider::instance();
             $instance->environment->setup();
@@ -272,7 +278,7 @@ function config(string $constant, $default = false)
     if (! is_null(App::instance())) {
         return EnvironmentProvider::instance()->configurations($constant, $default);
     }
-    throw new Exception('App not instantiated');
+    throw new Exception('App Not Instantiated');
 }
 /**
  * Set Configuration
@@ -287,5 +293,5 @@ function setConfig(string $constant, $value)
     if (! is_null(App::instance())) {
         return EnvironmentProvider::instance()->set($constant, $value);
     }
-    throw new Exception('App not instantiated');
+    throw new Exception('App Not Instantiated');
 }

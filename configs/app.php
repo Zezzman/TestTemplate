@@ -1,5 +1,6 @@
 <?php
 return [
+    // Application Information
     'APP' => [
         'NAME' => 'Application Name',
         'ENVIRONMENT' => getenv('APP_ENVIRONMENT'),
@@ -7,7 +8,7 @@ return [
     // Method client used to connect to server
     'CLIENT_TYPE' => $this->clientType(),
     // Domain of the server
-    'DOMAIN' => $this->domain(),
+    'DOMAIN' => $this->domain(), // recommend: Hard code to domain name
     // Server name
     'HOST' => gethostname(),
     // Directory paths
@@ -17,10 +18,6 @@ return [
     ],
     // Timezone of application
     'TIMEZONE' => 'Australia/Brisbane',
-    // Redirect guests when on restricted page
-    'GUESTS_REDIRECT' => false,
-    // Show if page has restricted access or show page not found
-    'VISIBLE_RESTRICTIONS' => true,
     // Show debug output
-    'DEBUG' => false,
+    'DEBUG' => (getenv('DEBUG') == true),
 ];

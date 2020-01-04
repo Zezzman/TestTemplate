@@ -167,13 +167,13 @@ final class HttpRequestProvider
         if (! is_null($this->currentRequests)
         && $this->currentRequests->valid()
         && ! AuthProvider::isAuthorized()) {
-            $guestsRedirect = $this->settings('GUESTS_REDIRECT');
+            $guestsRedirect = $this->settings('AUTH.GUEST.RESTRICTED_REDIRECT_URL');
             if (is_string($guestsRedirect)
             && ! empty($guestsRedirect)) {
                 $this->currentRequests->respond(404);
                 $this->redirect((string) $guestsRedirect);
             } else {
-                if ($this->settings('VISIBLE_RESTRICTIONS', true) === true) {
+                if ($this->settings('AUTH.USER.VISIBLE_RESTRICTIONS', true) === true) {
                     $this->currentRequests->respond(401);
                     $this->currentRequests->message = 'Request require authorization';
                 } else {
@@ -193,7 +193,7 @@ final class HttpRequestProvider
         if (! is_null($this->currentRequests)
         && $this->currentRequests->valid()
         && AuthProvider::isAuthorized()) {
-            if ($this->settings('VISIBLE_RESTRICTIONS', true) === true) {
+            if ($this->settings('AUTH.GUEST.VISIBLE_RESTRICTIONS', true) === true) {
                 $this->currentRequests->respond(403);
                 $this->currentRequests->message = 'Request only allowed as guest';
             } else {

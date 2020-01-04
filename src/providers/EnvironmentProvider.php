@@ -63,13 +63,11 @@ final class EnvironmentProvider
      */
     private function getConfig()
     {
-        $this->addConfig('app');
-        $this->addConfig('permissions');
-        $this->addConfig('namespaces');
-        $this->addConfig('database');
-        $this->addConfig('paths');
-        $this->addConfig('links');
-        $this->addConfig('layout');
+        $this->addConfig([
+            'app', 'permissions', 'namespaces',
+            'auth', 'database', 'paths',
+            'links', 'layout', 'collection'
+        ]);
     }
     /**
      * Get configurations from environment files
@@ -83,9 +81,11 @@ final class EnvironmentProvider
      */
     private function getEnvironment()
     {
-        $env = getenv('APP_ENVIRONMENT');
         $this->addEnvironment('default');
-        $this->addEnvironment($env);
+        $env = getenv('APP_ENVIRONMENT');
+        if (! empty($env)) {
+            $this->addEnvironment($env);
+        }
     }
     /**
      * Environment configuration settings
@@ -215,14 +215,28 @@ final class EnvironmentProvider
     /**
      * Add configurations from config files
      * within environment folder.
+     * 
+     * @param   string|array       $environment         name of config file
+     * 
+     * @return  bool        true if config was added
      */
     public function addConfig($environment)
     {
-        return $this->add($this->loadConfig($environment));
+        if (is_array($environment)) {
+            foreach ($environment as $file) {
+                $this->add($this->loadConfig($file));
+            }
+        } elseif (is_string($environment)) {
+            return $this->add($this->loadConfig($environment));
+        }
     }
     /**
      * Add configurations from environment files
      * within environment folder.
+     * 
+     * @param   string       $environment         name of environment file
+     * 
+     * @return  bool        true if environment was added
      */
     public function addEnvironment($environment)
     {
@@ -247,6 +261,8 @@ final class EnvironmentProvider
                 } else {
                     $this->files[$name] = 0;
                 }
+            } else {
+                throw new \Exception('Configuration File Not Found: ' . $name);
             }
         }
         return [];

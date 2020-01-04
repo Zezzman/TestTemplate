@@ -3,6 +3,7 @@
 $root = config('DOMAIN');
 return [
     'LINKS' => [
+        // Application Domain Root
         'PUBLIC' => $root,
         'IMAGES' => $root . 'assets/images/',
         'JS' => $root . 'assets/javascript/',
