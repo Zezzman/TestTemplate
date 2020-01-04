@@ -1,7 +1,8 @@
 <?php
-if (isset($bag['path']) && ! empty($bag['path'])) {
-    if (is_file(config('PATHS.STORAGE') . $bag['path'])) {
-        $file = \App\Providers\FileProvider::create($bag['path']);
+$path = trim($bag['path'], '/');
+if (isset($path) && ! empty($path)) {
+    if (is_file(config('PATHS.STORAGE') . $path)) {
+        $file = \App\Providers\FileProvider::create($path);
         if (! $file->isValid()) {
             return false;
         }
@@ -15,10 +16,11 @@ if (isset($bag['path']) && ! empty($bag['path'])) {
     <div class="row">
         <div class="col-12">
             <h1>Storage</h1>
-            <small><?= App\Helpers\HTMLHelper::Breadcrumbs($viewData->controller->getRequest()->uri); ?></small>
+            <small><?= App\Helpers\HTMLHelper::breadcrumbs('storage/' . $path); ?></small>
         </div>
         <div class="col-12">
-            <?php $this->section('storage'); ?>
+            <?= App\Helpers\HTMLHelper::backLink($path, config('LINKS.STORAGE')); ?>
+            <?= App\Helpers\HTMLHelper::folderFiles('storage/' . $path); ?>
         </div>
     </div>
 </div>
