@@ -128,21 +128,21 @@ class Controller implements IController
             $respond->request = $request;
             $respond->exception = $exception;
             
-            $viewModel = null;
-            if (!is_null($exception)) {
-                $viewModel = new ExceptionViewModel();
-                $viewModel->responseCode = $code;
-                $viewModel->exception = $exception;
-            }else{
-                $viewModel = new ViewModel();
-            }
+            $viewModel = new ExceptionViewModel();
+            $viewModel->responseTitle = $response;
+            $viewModel->responseCode = $code;
+            $viewModel->exception = $exception;
             if (! empty($message)) {
                 $viewModel->AddMessage(DataCleanerHelper::cleanValue($message));
             }
 
             $name = config('PATHS.RESOURCES') . 'responses/' . $code;
             try {
-                $respond->view = View::create($respond, $name, $viewModel);
+                if (is_file($name . '.php')) {
+                    $respond->view = View::create($respond, $name, $viewModel);
+                } else {
+                    $respond->view = View::create($respond, config('PATHS.RESOURCES') . 'responses/index', $viewModel);
+                }
             } catch (Exception $e) {
                 if (config('DEBUG')) {
                     echo "({$name}) : ". $e->getMessage();

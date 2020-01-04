@@ -10,7 +10,6 @@ use App\Helpers\ArrayHelper;
 class ViewModel implements IViewModel
 {
     public $messages = [];
-    public $exception = null;
 
     public function Messages(string $name = '', string $style = "{message}<br>", int $length = 0)
     {
@@ -70,9 +69,5 @@ class ViewModel implements IViewModel
                 $this->addMessage($feedback['message'], $feedback['name']);
             }
         }
-    }
-    public function Exception()
-    {
-        return (config('DEBUG') && ! is_null($this->exception)) ? $this->exception->getMessage() : '';
     }
 }

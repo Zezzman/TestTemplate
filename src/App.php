@@ -253,14 +253,14 @@ final class App
     {
         return [
             200 => 'OK',
-            204 => 'NoContent',
+            204 => 'No Content',
             401 => 'Unauthorized',
             403 => 'Forbidden',
-            404 => 'NotFound',
-            405 => 'MethodNotAllowed',
-            415 => 'InvalidMediaType',
-            500 => 'InternalError',
-            503 => 'ServiceUnavailable',
+            404 => 'Not Found',
+            405 => 'Method Not Allowed',
+            415 => 'Invalid Media Type',
+            500 => 'Internal Server Error',
+            503 => 'Service Unavailable',
         ];
     }
 }
