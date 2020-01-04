@@ -27,7 +27,7 @@ class View
      */
     public static function create(IController $controller, string $name, IViewModel $model = null, array $bag = [], bool $pauseRender = false)
     {
-        $view = new self($controller, $name, $model);
+        $view = new self($controller, $name, $model, $bag);
 
         if ($view->viewData()->valid()) {
             if ($pauseRender === false) {
@@ -78,6 +78,7 @@ class View
         // file local pre-defined variables
         $viewData = $this->viewData ?? null;
         $layout = $this->viewData->layout ?? null;
+        $controller = $this->viewData->controller ?? null;
         $model = $this->viewData->model ?? null;
         if (is_null($bag)) {
             if (! is_null($viewData)

@@ -48,14 +48,14 @@ final class FileProvider
         return $file;
     }
     /**
-     * Creates instance of files
+     * Scan folder for files
      * 
      * @param   string      $dir                        directory of files
      * @param   array       $allowExtensions            all allowed extensions
      * 
-     * @return  self    file instance
+     * @return  array    An array of file instances
      */
-    public static function scan(string $dir, array $allowExtensions = [], bool $includeFolders = false)
+    public static function scan(string $dir, array $allowExtensions = [])
     {
         $files = [];
         $root = config('PATHS.STORAGE');
@@ -64,9 +64,7 @@ final class FileProvider
             $names = scandir($root . $dir);
             foreach ($names as $name) {
                 if (! preg_match('/(^|\s)[\.]/', $name)) {
-                    if ($includeFolders && is_dir($root . $dir . $name)) {
-                        $files[] = $dir . $name;
-                    } else {
+                    if (is_file($root . $dir . $name)) {
                         $file = new self($dir . $name);
                         if ($file->isValid()) {
                             if (self::checkExtension($file->extension(), $allowExtensions)) {
@@ -76,10 +74,66 @@ final class FileProvider
                     }
                 }
             }
-        } elseif (is_file($root . $dir) && file_exists($root . $dir)) {
-            $files[] = new self($dir);
         }
         
+        return $files;
+    }
+    /**
+     * Scan folders for files
+     * 
+     * @param   array       $folders                    directories of files
+     * @param   array       $allowExtensions            all allowed extensions
+     * 
+     * @return  array    An array of file instances for each folder
+     */
+    public static function scanFolders(array $folders, array $allowExtensions = [])
+    {
+        $files = [];
+        $root = config('PATHS.STORAGE');
+        foreach ($folders as $folder) {
+            $dir = trim($folder, '/') . DIRECTORY_SEPARATOR;
+            if (is_dir($root . $dir)) {
+                $files[$dir] = [];
+                $names = scandir($root . $dir);
+                foreach ($names as $name) {
+                    if (! preg_match('/(^|\s)[\.]/', $name)) {
+                        if (is_file($root . $dir . $name)) {
+                            $file = new self($dir . $name);
+                            if ($file->isValid()) {
+                                if (self::checkExtension($file->extension(), $allowExtensions)) {
+                                    $files[$dir] = $file;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return $files;
+    }
+    /**
+     * List file within directory
+     * 
+     * @param   string      $dir                        directory of files
+     * @param   bool        $includeFolders             include folder names
+     * 
+     * @return  array    An array of file names
+     */
+    public static function listFiles(string $dir, bool $includeFolders)
+    {
+        $files = [];
+        $dir = DIRECTORY_SEPARATOR . trim($dir, '/') . DIRECTORY_SEPARATOR;
+        if (is_dir($dir)) {
+            $names = scandir($dir);
+            foreach ($names as $name) {
+                if (! preg_match('/(^|\s)[\.]/', $name)) {
+                    if ($includeFolders || (is_file($dir . $name)
+                    && file_exists($dir . $name))) {
+                        $files[] = ($dir . $name);
+                    }
+                }
+            }
+        }
         return $files;
     }
     /**

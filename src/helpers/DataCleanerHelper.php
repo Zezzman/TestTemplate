@@ -89,6 +89,14 @@ final class DataCleanerHelper extends Helper
      /**
      * Map String with callback
      * 
+     * start + from index
+     * 
+     * start - from last index
+     * 
+     * count + from start
+     * 
+     * count - count from last item
+     * 
      * @param	string	        $data		                        string of data.
      * @param	string	        $separator		                    separator within data.
      * @param	Closure	        $callback($a, $b, $c, $d)           callback function.
@@ -109,16 +117,16 @@ final class DataCleanerHelper extends Helper
                     return $a . $b . $c;
                 };
             }
-            $i = ($count > 0)? $count : (($count < 0)? count($sections) + $count: count($sections));
-            $start = ($start < 0) ? $i + $start : $start; 
-            foreach ($sections as $section) {
-                if ($start <= 0) {
-                    $i--;
-                    if ($i >= 0) {
-                        $result = $callback($result, $section, $separator, $count);
-                    }
+            $start = ($start < 0) ? count($sections) + $start : $start;
+            $count = ($count < 0)? count($sections) - $start + $count : (($count > 0) ? $count : count($sections) - $start);
+
+            for ($i = $start; $i < count($sections); $i++) {
+                $count--;
+                if ($count >= 0) {
+                    $result = $callback($result, $sections[$i], $separator, $i);
+                } else {
+                    break;
                 }
-                $start--;
             }
         }
         return $result;

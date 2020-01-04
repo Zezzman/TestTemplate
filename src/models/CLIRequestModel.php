@@ -81,7 +81,7 @@ class CLIRequestModel extends RequestModel
                 }
             }
             return true;
-        } else if ($request->commands == [] && $this->commands == []) {
+        } elseif ($request->commands == [] && $this->commands == []) {
             return true;
         }
         return false;

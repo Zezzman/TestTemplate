@@ -49,7 +49,7 @@ class CLIController
             ];
             if (empty($message)) {
                 $body['message'] = $response;
-            } else if (is_string($message)) {
+            } elseif (is_string($message)) {
                 $body['message'] = DataCleanerHelper::cleanValue($message ?? '');
             } else {
                 $message = DataCleanerHelper::cleanArray((array) $message);

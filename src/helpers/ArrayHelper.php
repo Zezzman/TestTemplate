@@ -417,7 +417,7 @@ final class ArrayHelper extends Helper
         return $empty;
     }
     /**
-     * searchArrayMap map the searched array
+     * Map the searched array
      * 
      * @return	array		arrays that match parameters given
      */
@@ -440,7 +440,7 @@ final class ArrayHelper extends Helper
                     }
                 }
                 return $array;
-            } else if ($searchFirst == "") {
+            } elseif ($searchFirst == "") {
                 foreach ($array as $index => $item) {
                     self::searchArrayMap($array[$index], $nextSearch, $callback);
                 }
