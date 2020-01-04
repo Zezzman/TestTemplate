@@ -1,4 +1,5 @@
 <?php
+/* $provider->get('uri', 'Controller@Action'); */
 /**
  *  Front Page
  */
