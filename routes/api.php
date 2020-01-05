@@ -7,4 +7,4 @@ $provider->get('broadcast', 'Broadcast@Index')->params(['limit' => 1]);
 /**
  * Collection Calls
  */
-$provider->get('collection', 'Broadcast@Collection')->header('HTTP_REQUEST_COLLECTION');
+$provider->get('collection', 'Collection@Index')->header('HTTP_REQUEST_COLLECTION');

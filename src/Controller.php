@@ -53,7 +53,7 @@ class Controller implements IController
         if (is_null($this->view)) {
             if (! empty($name)) {
                 try {
-                    $this->view = View::create($this, 'views/'. $name, $model, $bag, $this->pauseRender);
+                    $this->view = View::create($this, $name, $model, $bag, $this->pauseRender);
                 } catch (RespondingException $e) {
                     $this->error($e->respondCode(), $e);
                 } catch (PDOException $e) {

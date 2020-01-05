@@ -38,16 +38,14 @@ class ViewFactory
      */
     private function secureViewPath(string $name)
     {
-        $name = trim($name, '/');
         $name = DataCleanerHelper::cleanValue($name);
-        $path = "/{$name}.php";
-
+        $path = config('PATHS.APP') . "views/{$name}.php";
         if (file_exists($path)) {
             return $path;
         } else {
-            $path = config('PATHS.APP') . "{$name}.php";
-            if (file_exists($path)) {
-                return $path;
+            $altPath = config('PATHS.ROOT') . "{$name}.php";
+            if (file_exists($altPath)) {
+                return $altPath;
             } else {
                 throw new \Exception('Missing View file : ' . $path);
                 exit();

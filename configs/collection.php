@@ -2,7 +2,7 @@
 return [
     'COLLECTION' => [
         'DIRECTORIES' => [
-            config('PATHS.STORAGE')
+            '/storage/pictures'
         ]
     ]
 ];

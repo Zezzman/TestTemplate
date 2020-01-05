@@ -1,6 +1,4 @@
 <?php
-$isAuth = App\Providers\AuthProvider::isAuthorized();
-
 $links = config('NAV', [
     'Home' => ['link' => 'home/'],
 ]);

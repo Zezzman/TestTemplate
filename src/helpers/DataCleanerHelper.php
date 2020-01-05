@@ -113,8 +113,8 @@ final class DataCleanerHelper extends Helper
             $data = trim($data, $separator);
             $sections = explode($separator, $data);
             if (is_null($callback)) {
-                $callback = function ($a, $b, $c) {
-                    return $a . $b . $c;
+                $callback = function ($result, $item, $separator, $index) {
+                    return $result . $item . $separator;
                 };
             }
             $start = ($start < 0) ? count($sections) + $start : $start;

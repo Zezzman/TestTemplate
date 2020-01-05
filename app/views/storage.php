@@ -2,7 +2,7 @@
 $path = trim($bag['path'], '/');
 if (isset($path) && ! empty($path)) {
     if (is_file(config('PATHS.STORAGE') . $path)) {
-        $file = \App\Providers\FileProvider::create($path);
+        $file = \App\Providers\FileProvider::create('storage/' . $path);
         if (! $file->isValid()) {
             return false;
         }
@@ -20,7 +20,7 @@ if (isset($path) && ! empty($path)) {
         </div>
         <div class="col-12">
             <?= App\Helpers\HTMLHelper::backLink($path, config('LINKS.STORAGE')); ?>
-            <?= App\Helpers\HTMLHelper::folderFiles('storage/' . $path); ?>
+            <?= App\Helpers\HTMLHelper::folderFiles('storage/' . $path, [], true); ?>
         </div>
     </div>
 </div>

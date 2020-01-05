@@ -45,21 +45,15 @@ final class HTMLHelper extends Helper
     /**
      * 
      */
-    public static function folderFiles(string $dir, array $extensions = [], bool $includeFolders = true, string $linkBase = null)
+    public static function folderFiles(string $dir, array $extensions = [], bool $includeFolders = false, string $linkBase = null)
     {
         $html = '';
         if (! empty($dir)) {
-            $root = config('PATHS.ROOT');
             $linkBase = rtrim($linkBase ?? config('LINKS.PUBLIC'), '/');
-            if (is_dir($root . $dir)) {
-                $rootLength = count(explode('/', trim($root, '/')));
-                $files = FileProvider::listFiles($root . $dir, $includeFolders);
-                foreach ($files as $file) {
-                    $html .= '<a href="' . $linkBase . DataCleanerHelper::dataMap($file, '/',
-                    function ($result, $item) { return $result . '/' . $item; }, 0, $rootLength)
-                    . '/" style="display:block">' . DataCleanerHelper::dataMap($file, '/',
-                    function ($result, $item) { return $result . '/' . $item; }, 0, -1) . '/</a>';
-                }
+            $files = FileProvider::listFiles($dir, $includeFolders);
+            foreach ($files as $file) {
+                $html .= '<a href="' . $linkBase . '/' . DataCleanerHelper::dataMap($file, '/')
+                . '" style="display:block">' . DataCleanerHelper::dataMap($file, '/', null, 0, -1) . '</a>';
             }
         }
         return $html;

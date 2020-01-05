@@ -1,7 +1,6 @@
 <?php
 namespace App\Providers;
 
-use App\Providers\AuthProvider;
 use App\Helpers\HTTPHelper;
 use App\Factories\RequestFactory;
 /**

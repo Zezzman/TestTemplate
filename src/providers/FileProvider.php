@@ -4,6 +4,7 @@ namespace App\Providers;
 use App\Helpers\DataCleanerHelper;
 use App\Helpers\HTTPHelper;
 use App\Helpers\FileHelper;
+use App\Models\FileModel;
 use App\Traits\Feedback;
 /**
  * File Manager
@@ -14,27 +15,12 @@ use App\Traits\Feedback;
  */
 final class FileProvider
 {
-    use Feedback;
-    
     const MAX_SIZE = 4000000;
     const EXTENSIONS = ['jpeg','jpg','png', 'pdf'];
     const TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
     
-    protected $path = null;
-    protected $info = [];
+    private function __construct(){}
 
-    public function __construct(string $path)
-    {
-        if (empty($path)) {
-            return;
-        }
-        $this->path = DataCleanerHelper::cleanValue($path);
-        if (! $this->isValid()) {
-            $this->path = '';
-        } else {
-            $this->info = pathinfo($this->FullPath());
-        }
-    }
     /**
      * Creates file instance
      * 
@@ -44,8 +30,29 @@ final class FileProvider
      */
     public static function create(string $path)
     {
-        $file = new self($path);
-        return $file;
+        if (empty($path)) {
+            return;
+        }
+        $path = DataCleanerHelper::cleanValue($path);
+        $root = config('PATHS.ROOT');
+        if (self::checkFile($root . $path)) {
+            return new FileModel($path, pathinfo($root . $path));
+        }
+    }
+    /**
+     * Creates file instance that is within storage
+     * 
+     * @param   string      $path              file path
+     * 
+     * @return  self    file instance
+     */
+    public static function storageFile(string $path)
+    {
+        if (empty($path)) {
+            return;
+        }
+        $storage = substr(config('PATHS.STORAGE'), strlen(config('PATHS.ROOT')));
+        return self::create($storage . $path);
     }
     /**
      * Scan folder for files
@@ -58,14 +65,14 @@ final class FileProvider
     public static function scan(string $dir, array $allowExtensions = [])
     {
         $files = [];
-        $root = config('PATHS.STORAGE');
+        $root = config('PATHS.ROOT');
         $dir = trim($dir, '/') . DIRECTORY_SEPARATOR;
         if (is_dir($root . $dir)) {
             $names = scandir($root . $dir);
             foreach ($names as $name) {
                 if (! preg_match('/(^|\s)[\.]/', $name)) {
                     if (is_file($root . $dir . $name)) {
-                        $file = new self($dir . $name);
+                        $file = self::create($dir . $name);
                         if ($file->isValid()) {
                             if (self::checkExtension($file->extension(), $allowExtensions)) {
                                 $files[] = $file;
@@ -89,19 +96,20 @@ final class FileProvider
     public static function scanFolders(array $folders, array $allowExtensions = [])
     {
         $files = [];
-        $root = config('PATHS.STORAGE');
+        $root = config('PATHS.ROOT');
         foreach ($folders as $folder) {
-            $dir = trim($folder, '/') . DIRECTORY_SEPARATOR;
-            if (is_dir($root . $dir)) {
-                $files[$dir] = [];
-                $names = scandir($root . $dir);
+            $folder = trim($folder, '/') . DIRECTORY_SEPARATOR;
+            $dir = $root . $folder;
+            if (is_dir($dir)) {
+                $files[$folder] = [];
+                $names = scandir($dir);
                 foreach ($names as $name) {
                     if (! preg_match('/(^|\s)[\.]/', $name)) {
-                        if (is_file($root . $dir . $name)) {
-                            $file = new self($dir . $name);
+                        if (is_file($dir . $name)) {
+                            $file = self::create($folder . $name);
                             if ($file->isValid()) {
                                 if (self::checkExtension($file->extension(), $allowExtensions)) {
-                                    $files[$dir] = $file;
+                                    $files[$folder][] = $file;
                                 }
                             }
                         }
@@ -119,111 +127,24 @@ final class FileProvider
      * 
      * @return  array    An array of file names
      */
-    public static function listFiles(string $dir, bool $includeFolders)
+    public static function listFiles(string $dir, bool $includeFolders = false)
     {
         $files = [];
-        $dir = DIRECTORY_SEPARATOR . trim($dir, '/') . DIRECTORY_SEPARATOR;
-        if (is_dir($dir)) {
-            $names = scandir($dir);
+        $dir = trim($dir, '/');
+        $path = config('PATHS.ROOT') . $dir . DIRECTORY_SEPARATOR;
+        if (! empty($dir) && is_dir($path)) {
+            $names = scandir($path);
             foreach ($names as $name) {
                 if (! preg_match('/(^|\s)[\.]/', $name)) {
-                    if ($includeFolders || (is_file($dir . $name)
-                    && file_exists($dir . $name))) {
-                        $files[] = ($dir . $name);
+                    if ($includeFolders
+                    || (is_file($path . $name)
+                    && file_exists($path . $name))) {
+                        $files[] = DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $name;
                     }
                 }
             }
         }
         return $files;
-    }
-    /**
-     * Check if file exist
-     * 
-     * @return  bool        true if file exist
-     */
-    public function isValid()
-    {
-        return self::checkFile($this->fullPath());
-    }
-    /**
-     * File extension
-     * 
-     * @return  string      file extension
-     */
-    public function extension()
-    {
-        if ($this->info && isset($this->info['extension'])) {
-            return $this->info['extension'];
-        } else {
-            return false;
-        }
-    }
-    /**
-     * File mime type
-     * 
-     * @return  string          file mime type
-     */
-    public function type()
-    {
-        if ($this->isValid()) {
-            return mime_content_type($this->fullPath());
-        } else {
-            return false;
-        }
-    }
-    /**
-     * File name
-     * 
-     * @return  string      file name
-     */
-    public function name()
-    {
-        if ($this->info && isset($this->info['basename'])) {
-            return $this->info['basename'];
-        } else {
-            return '';
-        }
-    }
-    /**
-     * File path
-     * 
-     * File path from relative to storage folder
-     * 
-     * @return  string      file path
-     */
-    public function path()
-    {
-        return $this->path;
-    }
-    /**
-     * Full file path
-     * 
-     * @return  string      file path
-     */
-    public function fullPath()
-    {
-        if (! empty($this->path)) {
-            return config('PATHS.STORAGE') . $this->path;
-        }
-        return '';
-    }
-    /**
-     * Read file
-     * 
-     * @return  bool        false if file cannot be read
-     */
-    public function read()
-    {
-        return FileHelper::readFile($this->fullPath(), $this->type());
-    }
-    /**
-     * Print file
-     * 
-     * @return  string      html of embedded file
-     */
-    public function print(string $description = '', string $style = '<img src="data:{type};{base},{data}" alt="{description}">')
-    {
-        return FileHelper::printImage($this->fullPath(), $this->type(), $description, $style);
     }
     /**
      * Uploads File
@@ -244,6 +165,7 @@ final class FileProvider
         if (! config('PERMISSIONS.ALLOW_UPLOADS') || ! HTTPHelper::isFile($fileIndex) || ($_FILES[$fileIndex]['error'] !== 0)) {
             return false;
         }
+        $storagePath = config('PATHS.STORAGE');
 
         // Get file
         $file = self::create($_FILES[$fileIndex]['name'] ?? '');
@@ -251,11 +173,11 @@ final class FileProvider
         $ext = $file->extension();
 
         // check if upload directory is a directory and is writable
-        if (! is_dir(config('PATHS.STORAGE'))) {
+        if (! is_dir($storagePath)) {
             $file->feedback('Upload directory does not exist', 1, 'FileFolder');
             return $file;
         }
-        if (! is_writable(config('PATHS.STORAGE'))) {
+        if (! is_writable($storagePath)) {
             $file->feedback('Upload directory is not writable', 1, 'FileFolder');
             return $file;
         }
@@ -264,10 +186,10 @@ final class FileProvider
         if ($folder) {
             $folder = str_replace('/', '', $folder);
             $folder = DataCleanerHelper::cleanValue($folder);
-            if (file_exists(config('PATHS.STORAGE') . $folder) && is_dir(config('PATHS.STORAGE') . $folder)) {
+            if (file_exists($storagePath . $folder) && is_dir($storagePath . $folder)) {
                 $folder = $folder . '/';
             } else {
-                $file->feedback('Folder does not exist ' . config('PATHS.STORAGE') . $folder, 1, 'FileFolder');
+                $file->feedback('Folder does not exist ' . $storagePath . $folder, 1, 'FileFolder');
                 return $file;
             }
         } else {
@@ -322,7 +244,7 @@ final class FileProvider
             $file_name = $folder . $name . '.' . $ext;
         }
 
-        if ( !$overwrite && self::checkFile(config('PATHS.STORAGE') . $file_name)) {
+        if ( !$overwrite && self::checkFile($storagePath . $file_name)) {
             $file->feedback('File name already exist', 0, 'FileName');
         }
         if ($file->hasFeedbackWithType(1)) {
@@ -332,8 +254,8 @@ final class FileProvider
             return $file;
         }
 
-        if (move_uploaded_file($tmp_name, config('PATHS.STORAGE') . $file_name)) {
-            $file = new self($file_name);
+        if (move_uploaded_file($tmp_name, $storagePath . $file_name)) {
+            $file = self::storageFile($file_name);
             if ($file->isValid()) {
                 return $file;
             } else {
@@ -353,7 +275,7 @@ final class FileProvider
      * 
      * @return  bool      true if extension is allowed
      */
-    protected static function checkExtension(string $ext, array $allowExtensions = [])
+    public static function checkExtension(string $ext, array $allowExtensions = [])
     {
         if (! empty($allowExtensions)) {
             if (in_array($ext, $allowExtensions)) {
@@ -373,7 +295,7 @@ final class FileProvider
      * 
      * @return  bool      true if type is allowed
      */
-    protected static function checkType(string $type)
+    public static function checkType(string $type)
     {
         if (in_array($type, self::TYPES)) {
             return true;
@@ -381,18 +303,18 @@ final class FileProvider
         return false;
     }
     /**
-     * Check if file exist in storage folder
+     * Check if file path exist
      * 
-     * @param   string      $file                       file path
+     * @param   string      $path               file path
      * 
      * @return  bool      true if file exist
      */
-    protected static function checkFile(string $file)
+    public static function checkFile(string $path)
     {
-        if (empty($file)) {
+        if (empty($path)) {
             return false;
         }
-        if (file_exists($file) && is_file($file)) {
+        if (file_exists($path) && is_file($path)) {
             return true;
         }
         return false;
