@@ -105,6 +105,9 @@ final class FileHelper extends Helper
             $style = '<script {src} {async} {defer} {type} {charset}>{code}</script>';
 
             foreach ($scripts as $script) {
+                if (is_string($script)) {
+                    $script = ['src' => $script];
+                }
                 if (is_array($script)) {
                     // Required fields
                     $script['async'] = (in_array('async', $script)) ? 'async' : '';

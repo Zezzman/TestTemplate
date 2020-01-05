@@ -7,7 +7,7 @@ function RemoteAPI(){
             headers : {
                 'token': token,
             },
-            url: domain + uri,
+            url: remoteDomain + uri,
             type: method,
             dataType: "json",
             data: data,
@@ -44,6 +44,7 @@ function RemoteAPI(){
         };
         thresholdCount = threshold;
         if (listeners.hasOwnProperty(uri)) {
+            // console.log('Executing');
             Action();
             listeners[uri] = Action;
         } else {
@@ -52,12 +53,15 @@ function RemoteAPI(){
                 if (listeners.hasOwnProperty(uri)
                 && listeners[uri]) {
                     if (listeners[uri] !== true) {
+                        // console.log('Responded');
                         thresholdCount = threshold;
                         listeners[uri](Action);
                     } else {
+                        // console.log('Waiting');
                         if (thresholdCount > 0) {
                             thresholdCount--;
                         } else {
+                            // console.log('Threshold Exceeded');
                             if (error)
                                 error(false);
                             listeners[uri] = false;

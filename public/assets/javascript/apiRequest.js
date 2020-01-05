@@ -17,7 +17,7 @@ function ResponseToHTML(data, response) {
 }
 
 $(document).ready(function () {
-    remote.Listen('broadcast', null, 'GET', 5000, function (data) {
-        console.log(data);
-    }, null, true);
+    remote.Listen('broadcast', null, 'GET', 5000,
+    function (data) {console.log(data);},
+    function (data) {console.log(data.responseJSON);} , true);
 });
