@@ -39,7 +39,7 @@ class CLIController
     {
         ob_start();
         ob_clean();
-        $responses = \App::Responses();
+        $responses = \Launcher::Responses();
 
         if (isset($responses[$code])) {
             $response = $responses[$code];

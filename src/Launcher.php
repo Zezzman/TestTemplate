@@ -1,4 +1,6 @@
 <?php
+namespace App;
+
 use App\Controller;
 use App\APIController;
 use App\CLIController;
@@ -13,7 +15,7 @@ use App\Exceptions\RespondingException;
  * 
  * @author  Francois Le Roux <francoisleroux97@gmail.com>
  */
-final class App
+final class Launcher
 {
     private static $instance = null;
     public $environment = null;
@@ -275,7 +277,7 @@ final class App
  */
 function config(string $constant, $default = false)
 {
-    if (! is_null(App::instance())) {
+    if (! is_null(Launcher::instance())) {
         return EnvironmentProvider::instance()->configurations($constant, $default);
     }
     throw new Exception('App Not Instantiated');
@@ -290,7 +292,7 @@ function config(string $constant, $default = false)
  */
 function setConfig(string $constant, $value)
 {
-    if (! is_null(App::instance())) {
+    if (! is_null(Launcher::instance())) {
         return EnvironmentProvider::instance()->set($constant, $value);
     }
     throw new Exception('App Not Instantiated');

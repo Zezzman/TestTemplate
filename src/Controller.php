@@ -109,7 +109,7 @@ class Controller implements IController
     {
         ob_start();
         ob_clean();
-        $responses = \App::Responses();
+        $responses = \Launcher::Responses();
 
         if (! is_null($request)) {
             $redirect = $request->redirect;

@@ -7,7 +7,7 @@ require_once(dirname(__DIR__) . '/bootstrap/app.php');
 /**
  * Create Application
  */
-$app = App::setup();
+$app = Launcher::setup();
 setConfig('APP', ['ARGV' => ($argv ?? [])]);
 
 /**
