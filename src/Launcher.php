@@ -1,6 +1,4 @@
 <?php
-namespace App;
-
 use App\Controller;
 use App\APIController;
 use App\CLIController;
