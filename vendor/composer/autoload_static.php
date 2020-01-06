@@ -7,20 +7,6 @@ namespace Composer\Autoload;
 class ComposerStaticInit3cd67bd294b098dc5e3abacaab3f5a38
 {
     public static $prefixLengthsPsr4 = array (
-        'P' => 
-        array (
-            'Portfolio\\Controllers\\' => 22,
-            'Portfolio\\CLI\\' => 14,
-            'Portfolio\\API\\' => 14,
-            'Portfolio\\' => 10,
-        ),
-        'C' => 
-        array (
-            'Collector\\Controllers\\' => 22,
-            'Collector\\CLI\\' => 14,
-            'Collector\\API\\' => 14,
-            'Collector\\' => 10,
-        ),
         'A' => 
         array (
             'App\\ViewModels\\' => 15,
@@ -43,38 +29,6 @@ class ComposerStaticInit3cd67bd294b098dc5e3abacaab3f5a38
     );
 
     public static $prefixDirsPsr4 = array (
-        'Portfolio\\Controllers\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/Portfolio/http/controllers',
-        ),
-        'Portfolio\\CLI\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/Portfolio/cli',
-        ),
-        'Portfolio\\API\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/Portfolio/http/api',
-        ),
-        'Portfolio\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/Portfolio',
-        ),
-        'Collector\\Controllers\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/Collector/http/controllers',
-        ),
-        'Collector\\CLI\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/Collector/cli',
-        ),
-        'Collector\\API\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/Collector/http/api',
-        ),
-        'Collector\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/Collector',
-        ),
         'App\\ViewModels\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src/viewModels',
