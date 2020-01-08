@@ -2,19 +2,6 @@
     "autoload": {
         "psr-4": {
             "App\\": "src/",
-            "App\\Databases\\": "src/databases/",
-            "App\\Helpers\\": "src/helpers/",
-            "App\\Traits\\": "src/traits/",
-            "App\\Providers\\": "src/providers/",
-            "App\\Cronjobs\\": "src/cronjobs/",
-            "App\\Exceptions\\": "src/exceptions/",
-            "App\\Interfaces\\": "src/interfaces/",
-            "App\\Factories\\": "src/factories/",
-            "App\\Models\\": "src/models/",
-            "App\\Repositories\\": "src/repositories/",
-            "App\\Services\\": "src/services/",
-            "App\\ViewModels\\": "src/viewModels/",
-            
             "App\\Controllers\\": "app/http/controllers/",
             "App\\API\\": "app/http/api/",
             "App\\CLI\\": "app/cli/"
