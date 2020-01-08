@@ -1,14 +1,17 @@
 <?php
 // URI locations
-$root = config('DOMAIN');
+$domain = config('DOMAIN');
 return [
     'LINKS' => [
-        // Application Domain Root
-        'PUBLIC' => $root,
-        'IMAGES' => $root . 'assets/images/',
-        'JS' => $root . 'assets/javascript/',
-        'CSS' => $root . 'assets/css/',
-        'PLUGINS' => $root . 'assets/plugins/',
-        'STORAGE' => $root . 'storage/',
+        // Application Link
+        'PUBLIC' => '/',
+        // Assets Directories
+        'IMAGES' => 'assets/images/',
+        'JS' => 'assets/javascript/',
+        'CSS' => 'assets/css/',
+        'PLUGINS' => 'assets/plugins/',
+        // Storage Directory
+        'STORAGE' => 'storage/',
+        'EXPAND' => function (string $constant, $default = false) use ($domain) { return $domain . config('LINKS.' . $constant, $default); }
     ]
 ];

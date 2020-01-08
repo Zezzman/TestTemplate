@@ -58,9 +58,11 @@ class Router
         $uri = HTTPHelper::URI();
         $provider = new HttpRequestProvider($uri);
         // Load available request
-        $web = config('PATHS.ROUTES') . 'web.php';
+        $web = config('PATHS.EXPAND')('ROUTES') . 'web.php';
         if (file_exists($web)) {
             require($web);
+        } else {
+            throw new Exception('Web Route File Not Found');
         }
         // Find matching request
         $this->request = $provider->matchRequests();
@@ -72,9 +74,11 @@ class Router
     {
         $uri = HTTPHelper::URI();
         $provider = new HttpRequestProvider($uri);
-        $api = config('PATHS.ROUTES') . 'api.php';
+        $api = config('PATHS.EXPAND')('ROUTES') . 'api.php';
         if (file_exists($api)) {
             require($api);
+        } else {
+            throw new Exception('API Route File Not Found');
         }
         if ($this->requestMethod === 'OPTIONS') {
             header('Access-Control-Allow-Origin: https://localhost');
@@ -89,9 +93,11 @@ class Router
     {
         $commands = config('APP.ARGV');
         $provider = new CLIRequestProvider($commands);
-        $cli = config('PATHS.ROUTES') . 'cli.php';
+        $cli = config('PATHS.EXPAND')('ROUTES') . 'cli.php';
         if (file_exists($cli)) {
             require($cli);
+        } else {
+            throw new Exception('CLI Route File Not Found');
         }
         $this->request = $provider->matchRequests($commands);
     }

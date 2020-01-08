@@ -7,6 +7,7 @@ use App\Interfaces\IView;
 use App\Interfaces\IController;
 use App\Helpers\DataCleanerHelper;
 use App\ViewData;
+use Exception;
 /**
  * 
  */
@@ -39,15 +40,15 @@ class ViewFactory
     private function secureViewPath(string $name)
     {
         $name = DataCleanerHelper::cleanValue($name);
-        $path = config('PATHS.APP') . "views/{$name}.php";
+        $path = config('PATHS.EXPAND')('APP') . "views/{$name}.php";
         if (file_exists($path)) {
             return $path;
         } else {
-            $altPath = config('PATHS.ROOT') . "{$name}.php";
+            $altPath = requireConfig('PATHS.ROOT') . "{$name}.php";
             if (file_exists($altPath)) {
                 return $altPath;
             } else {
-                throw new \Exception('Missing View file : ' . $path);
+                throw new Exception('Missing View file : ' . $path);
                 exit();
             }
         }

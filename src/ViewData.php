@@ -45,9 +45,11 @@ class ViewData implements IView
             if (file_exists($path)) {
                 $this->layout = $path;
             } else {
-                $path = config('PATHS.RESOURCES') . "layouts/{$name}.php";
+                $path = config('PATHS.EXPAND')('RESOURCES'). "layouts/{$name}.php";
                 if (file_exists($path)) {
                     $this->layout = $path;
+                } else {
+                    throw new Exception('Layout File Not Found');
                 }
             }
         }
@@ -58,7 +60,7 @@ class ViewData implements IView
     public function link()
     {
         if (! is_null($this->controller->getRequest())) {
-            return config('LINKS.PUBLIC') . $this->controller->getRequest()->uri;
+            return config('LINKS.EXPAND')('PUBLIC') . $this->controller->getRequest()->uri;
         }
         return '';
     }

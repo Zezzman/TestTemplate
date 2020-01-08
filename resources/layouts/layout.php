@@ -3,12 +3,12 @@
 <?php 
 $this->header('header');
 
-$sections = config('LAYOUT.SECTIONS');
-if (is_array($sections)) {
-    foreach ($sections as $section) {
-        $this->section($section, $bag); 
-    }
-}
+$links = config('NAV', [
+    'Home' => ['link' => 'home/'],
+]);
+$this->section('navbar', [
+    'links' => config('NAV', ['Home' => ['link' => 'home/']])
+]);
 ?>
 
 <body>

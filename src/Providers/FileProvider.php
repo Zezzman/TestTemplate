@@ -32,25 +32,10 @@ final class FileProvider
             return;
         }
         $path = DataCleanerHelper::cleanValue($path);
-        $root = config('PATHS.ROOT');
+        $root = requireConfig('PATHS.ROOT');
         if (self::checkFile($root . $path)) {
             return new FileModel($path, pathinfo($root . $path));
         }
-    }
-    /**
-     * Creates file instance that is within storage
-     * 
-     * @param   string      $path              file path
-     * 
-     * @return  self    file instance
-     */
-    public static function storageFile(string $path)
-    {
-        if (empty($path)) {
-            return;
-        }
-        $storage = substr(config('PATHS.STORAGE'), strlen(config('PATHS.ROOT')));
-        return self::create($storage . $path);
     }
     /**
      * Scan folder for files
@@ -63,7 +48,7 @@ final class FileProvider
     public static function scan(string $dir, array $allowExtensions = [])
     {
         $files = [];
-        $root = config('PATHS.ROOT');
+        $root = requireConfig('PATHS.ROOT');
         $dir = trim($dir, '/') . DIRECTORY_SEPARATOR;
         if (is_dir($root . $dir)) {
             $names = scandir($root . $dir);
@@ -94,7 +79,7 @@ final class FileProvider
     public static function scanFolders(array $folders, array $allowExtensions = [])
     {
         $files = [];
-        $root = config('PATHS.ROOT');
+        $root = requireConfig('PATHS.ROOT');
         foreach ($folders as $folder) {
             $folder = trim($folder, '/') . DIRECTORY_SEPARATOR;
             $dir = $root . $folder;
@@ -129,7 +114,7 @@ final class FileProvider
     {
         $files = [];
         $dir = trim($dir, '/');
-        $path = config('PATHS.ROOT') . $dir . DIRECTORY_SEPARATOR;
+        $path = requireConfig('PATHS.ROOT') . $dir . DIRECTORY_SEPARATOR;
         if (! empty($dir) && is_dir($path)) {
             $names = scandir($path);
             foreach ($names as $name) {
@@ -163,7 +148,10 @@ final class FileProvider
         if (! config('PERMISSIONS.ALLOW_UPLOADS') || ! HTTPHelper::isFile($fileIndex) || ($_FILES[$fileIndex]['error'] !== 0)) {
             return false;
         }
-        $storagePath = config('PATHS.STORAGE');
+        $storagePath = config('PATHS.EXPAND')('STORAGE');
+        if (empty($storagePath)) {
+            return false;
+        }
 
         // Get file
         $file = self::create($_FILES[$fileIndex]['name'] ?? '');
@@ -253,7 +241,7 @@ final class FileProvider
         }
 
         if (move_uploaded_file($tmp_name, $storagePath . $file_name)) {
-            $file = self::storageFile($file_name);
+            $file = self::create(config('PATHS.STORAGE') . $file_name);
             if ($file->isValid()) {
                 return $file;
             } else {

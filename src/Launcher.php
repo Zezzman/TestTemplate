@@ -271,7 +271,7 @@ final class Launcher
  * @param   string      $constant           constant name within configuration settings
  * @param   mix         $default            default value returned when key does not exist
  * 
- * @return  string|bool     return value related to the $key or $default when value is not found
+ * @return  mix     return value related to the $key or $default when value is not found
  */
 function config(string $constant, $default = false)
 {
@@ -294,4 +294,21 @@ function setConfig(string $constant, $value)
         return EnvironmentProvider::instance()->set($constant, $value);
     }
     throw new Exception('App Not Instantiated');
+}
+/**
+ * Require Configuration
+ * 
+ * Throw Exception when value is null or empty string
+ * 
+ * @param   string      $constant           constant name within configuration settings
+ * 
+ * @return  mix     return value related to the $key or $default when value is not found
+ */
+function requireConfig(string $constant)
+{
+    $value = config($constant, null);
+    if (is_null($value) || (is_string($value) && empty($value))) {
+        throw new Exception('Empty Required Configuration');
+    }
+    return $value;
 }

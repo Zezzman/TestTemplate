@@ -2,6 +2,7 @@
 namespace App\Providers;
 
 use App\Helpers\ArrayHelper;
+use Exception;
 /**
  * Manage environment variables
  * 
@@ -9,6 +10,7 @@ use App\Helpers\ArrayHelper;
  */
 final class EnvironmentProvider
 {
+    const CONFIG_SEPARATOR = '.';
     private static $instance = null;
     public $configs = [];
     public $files = [];
@@ -119,8 +121,8 @@ final class EnvironmentProvider
     {
         $configs = &$this->configs;
         if (is_array($configs)) {
-            $key = trim(strtoupper($key), '/');
-            $keys = explode('/', $key);
+            $key = trim(strtoupper($key), self::CONFIG_SEPARATOR);
+            $keys = explode(self::CONFIG_SEPARATOR, $key);
             
             for ($i = 0; $i < count($keys); $i++) {
                 $index = $keys[$i];
@@ -262,7 +264,7 @@ final class EnvironmentProvider
                     $this->files[$name] = 0;
                 }
             } else {
-                throw new \Exception('Configuration File Not Found: ' . $name);
+                throw new Exception('Configuration File Not Found: ' . $name);
             }
         }
         return [];
@@ -338,7 +340,7 @@ final class EnvironmentProvider
             return $default;
         }
 
-        $constant = ArrayHelper::deepSearch($configs, strtoupper($key), '.');
+        $constant = ArrayHelper::deepSearch($configs, strtoupper($key), self::CONFIG_SEPARATOR);
         if (is_null($constant)) {
             return $default;
         } else {

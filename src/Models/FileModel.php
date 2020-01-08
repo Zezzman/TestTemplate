@@ -95,7 +95,7 @@ class FileModel
      */
     public function link()
     {
-        return config('LINKS.PUBLIC') . $this->subPath;
+        return config('LINKS.EXPAND')('PUBLIC') . $this->subPath;
     }
     /**
      * Read file

@@ -98,7 +98,7 @@ final class HTTPHelper extends Helper
     public static function redirect(string $uri, array $params = null, int $responseCode = null)
     {
         // redirect to new $uri
-        $url = config('LINKS.PUBLIC') . $uri;
+        $url = config('LINKS.EXPAND')('PUBLIC') . $uri;
         if (! is_null($params)) {
             $keys = array_keys($params);
             for ($i = 0; $i < count($params); $i++) {

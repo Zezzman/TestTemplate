@@ -12,7 +12,7 @@ if (isset($bag['links'])) {
             if (isset($link['link'])) {
                 $linkObj = [
                     'name' => $name,
-                    'link' => config('LINKS.PUBLIC') . $link['link'],
+                    'link' => config('LINKS.EXPAND')('PUBLIC') . $link['link'],
                     'active' => ($link['link'] === $uri) ? 'active' : '',
                 ];
                 if (isset($link['align'])) {

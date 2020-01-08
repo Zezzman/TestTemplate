@@ -54,12 +54,12 @@ class View
     }
     private function header(string $name, array $bag = null)
     {
-        $path = config('PATHS.RESOURCES') . "headers/{$name}.php";
+        $path = config('PATHS.EXPAND')('RESOURCES') . "headers/{$name}.php";
         return $this->loadFile($path, $bag);
     }
     private function footer(string $name, array $bag = null)
     {
-        $path = config('PATHS.RESOURCES') . "footers/{$name}.php";
+        $path = config('PATHS.EXPAND')('RESOURCES') . "footers/{$name}.php";
         return $this->loadFile($path, $bag);
     }
     /**
@@ -67,7 +67,7 @@ class View
      */
     private function section(string $name, array $bag = null)
     {
-        $path = config('PATHS.RESOURCES') . "sections/{$name}.php";
+        $path = config('PATHS.EXPAND')('RESOURCES') . "sections/{$name}.php";
         return $this->loadFile($path, $bag);
     }
     /**
@@ -89,11 +89,12 @@ class View
             }
         }
 
-        if (! empty($path) && file_exists($path)) {
-            return include($path);
-        } else {
-            return false;
+        if (! empty($path)) {
+            if (file_exists($path)) {
+                return include($path);
+            }
         }
+        return false;
     }
     /**
      * 
@@ -129,7 +130,7 @@ class View
             if (! is_null($this->viewData->layout)) {
                 // include body within layout
                 $this->viewData->body = $body;
-                $layout = $this->loadFile($this->viewData->layout ?? '', []);
+                $layout = $this->loadFile($this->viewData->layout ?? '');
                 $content = ob_get_clean();
                 if ($layout) {
                     $this->viewData->hasRendered = true;
