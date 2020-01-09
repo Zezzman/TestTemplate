@@ -18,7 +18,7 @@ final class HTMLHelper extends Helper
         $html = '';
         if (! empty($uri)) {
             $sections = explode($separator, $uri);
-            $link = config('LINKS.EXPAND')('PUBLIC');
+            $link = config('CLOSURES.LINK')('PUBLIC');
             foreach ($sections as $section) {
                 if (! empty($section)) {
                     $link .= $section . $separator;
@@ -35,7 +35,7 @@ final class HTMLHelper extends Helper
     {
         $html = '';
         if (! empty($url)) {
-            $linkBase = rtrim($linkBase ?? config('LINKS.EXPAND')('PUBLIC'), '/');
+            $linkBase = rtrim($linkBase ?? config('CLOSURES.LINK')('PUBLIC'), '/');
             $back = DataCleanerHelper::dataMap($url, '/',
             function ($result, $item) { return $result . '/' . $item; }, -1, 0);
             $html .= ('<a href="' . $linkBase . $back . '/" style="display:block">/back/</a>');
@@ -49,7 +49,7 @@ final class HTMLHelper extends Helper
     {
         $html = '';
         if (! empty($dir)) {
-            $linkBase = rtrim($linkBase ?? config('LINKS.EXPAND')('PUBLIC'), '/');
+            $linkBase = rtrim($linkBase ?? config('CLOSURES.LINK')('PUBLIC'), '/');
             $files = FileProvider::listFiles($dir, $includeFolders);
             foreach ($files as $file) {
                 $html .= '<a href="' . $linkBase . '/' . DataCleanerHelper::dataMap($file, '/')

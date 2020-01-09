@@ -1,6 +1,6 @@
 <?php
 // Directory paths relative to ROOT
-$root = config('PATHS.ROOT');
+$root = requireConfig('PATHS.ROOT');
 return [
     'PATHS' => [
         'PUBLIC' => 'public/',
@@ -10,6 +10,8 @@ return [
         'ROUTES' => 'routes/',
         'STORAGE' => 'storage/',
         'VENDOR' => 'vendor/',
-        'EXPAND' => function (string $constant, $default = false) use ($root) { return $root . config('PATHS.' . $constant, $default); }
     ],
+    'CLOSURES' => [
+        'PATH' => function (string $constant, $default = false) use ($root) { return $root . config('PATHS.' . $constant, $default); }
+    ]
 ];

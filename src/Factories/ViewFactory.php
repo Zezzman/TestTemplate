@@ -1,12 +1,9 @@
 <?php
 namespace App\Factories;
 
-use App\Interfaces\IRequest;
-use App\Interfaces\IViewModel;
-use App\Interfaces\IView;
-use App\Interfaces\IController;
-use App\Helpers\DataCleanerHelper;
 use App\ViewData;
+use App\Interfaces\IViewModel;
+use App\Helpers\DataCleanerHelper;
 use Exception;
 /**
  * 
@@ -16,31 +13,17 @@ class ViewFactory
     /**
      * 
      */
-    public function createView(IController $controller, string $name, IViewModel $model = null)
+    public static function createView(string $name, IViewModel $model = null, array $bag = null)
     {
-        $view = new ViewData($name, $controller);
-        $view->path = $this->secureViewPath($name);
-        if (! is_null($model)) {
-            $this->setModel($view, $model);
-        }
-        return $view;
+        return new ViewData($name, self::secureViewPath($name), $model, $bag);
     }
     /**
      * 
      */
-    private function setModel(IView $view, IViewModel $model)
-    {
-        if (is_null($view->model)) {
-            $view->model = $model;
-        }
-    }
-    /**
-     * 
-     */
-    private function secureViewPath(string $name)
+    private static function secureViewPath(string $name)
     {
         $name = DataCleanerHelper::cleanValue($name);
-        $path = config('PATHS.EXPAND')('APP') . "views/{$name}.php";
+        $path = config('CLOSURES.PATH')('APP') . "views/{$name}.php";
         if (file_exists($path)) {
             return $path;
         } else {
@@ -48,7 +31,7 @@ class ViewFactory
             if (file_exists($altPath)) {
                 return $altPath;
             } else {
-                throw new Exception('Missing View file : ' . $path);
+                throw new Exception('Missing View file : ' . $name);
                 exit();
             }
         }

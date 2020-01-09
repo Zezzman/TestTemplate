@@ -58,7 +58,7 @@ class Router
         $uri = HTTPHelper::URI();
         $provider = new HttpRequestProvider($uri);
         // Load available request
-        $web = config('PATHS.EXPAND')('ROUTES') . 'web.php';
+        $web = config('CLOSURES.PATH')('ROUTES') . 'web.php';
         if (file_exists($web)) {
             require($web);
         } else {
@@ -74,7 +74,7 @@ class Router
     {
         $uri = HTTPHelper::URI();
         $provider = new HttpRequestProvider($uri);
-        $api = config('PATHS.EXPAND')('ROUTES') . 'api.php';
+        $api = config('CLOSURES.PATH')('ROUTES') . 'api.php';
         if (file_exists($api)) {
             require($api);
         } else {
@@ -93,7 +93,7 @@ class Router
     {
         $commands = config('APP.ARGV');
         $provider = new CLIRequestProvider($commands);
-        $cli = config('PATHS.EXPAND')('ROUTES') . 'cli.php';
+        $cli = config('CLOSURES.PATH')('ROUTES') . 'cli.php';
         if (file_exists($cli)) {
             require($cli);
         } else {

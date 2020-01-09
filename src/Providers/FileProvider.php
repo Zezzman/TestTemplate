@@ -148,7 +148,7 @@ final class FileProvider
         if (! config('PERMISSIONS.ALLOW_UPLOADS') || ! HTTPHelper::isFile($fileIndex) || ($_FILES[$fileIndex]['error'] !== 0)) {
             return false;
         }
-        $storagePath = config('PATHS.EXPAND')('STORAGE');
+        $storagePath = config('CLOSURES.PATH')('STORAGE');
         if (empty($storagePath)) {
             return false;
         }

@@ -1,9 +1,11 @@
 <?php
 namespace App;
 
+use App\ViewData;
 use App\Interfaces\IController;
 use App\Interfaces\IViewModel;
 use App\Factories\ViewFactory;
+use App\Helpers\DataCleanerHelper;
 /**
  * View
  * 
@@ -11,28 +13,37 @@ use App\Factories\ViewFactory;
  */
 class View
 {
-    private $viewData = null;
+    public $hasRendered = false;
+    private $controller = null;
+    private $viewData = [];
+    private $layout = null;
+    private $currentView = null;
+    private $content = '';
+    private $append = '';
 
     /**
      * 
      */
-    public function __construct(IController $controller, string $name, IViewModel $model = null, array $bag = [])
+    private function __construct(IController $controller, string $name, IViewModel $model = null, array $bag = [])
     {
-        $service = new ViewFactory();
-        $this->viewData = $service->createView($controller, $name, $model);
-        $this->viewData->bag = $bag;
+        $this->controller = $controller;
+        $viewData = ViewFactory::createView($name, $model, $bag);
+        if ($viewData->valid()) {
+            $this->currentView = $viewData;
+            $this->viewData[$name] = $viewData;
+            if (config('LAYOUT.DEFAULT', false) !== false) {
+                $this->layout(config('LAYOUT.DEFAULT'));
+            }
+        }
     }
     /**
      * 
      */
-    public static function create(IController $controller, string $name, IViewModel $model = null, array $bag = [], bool $pauseRender = false)
+    public static function create(IController $controller, string $name, IViewModel $model = null, array $bag = [])
     {
         $view = new self($controller, $name, $model, $bag);
 
-        if ($view->viewData()->valid()) {
-            if ($pauseRender === false) {
-                $view->render();
-            }
+        if ($view->viewData($name)->valid()) {
             return $view;
         } else {
             return null;
@@ -41,25 +52,58 @@ class View
     /**
      * 
      */
-    public function ViewData()
+    public function viewData(string $name)
     {
-        return $this->viewData;
+        return $this->viewData[$name] ?? null;
     }
     /**
      * 
      */
-    private function layout(string $layout = null)
+    public function appendView(string $name, IViewModel $model = null, array $bag = [])
     {
-        $this->viewData->setLayout($layout);
+        if (! isset($this->viewData[$name])) {
+            $viewData = ViewFactory::createView($name, $model, $bag);
+            if ($viewData->valid()) {
+                $this->currentView = $viewData;
+                $this->viewData[$name] = $viewData;
+                return true;
+            }
+        }
+        return false;
+    }
+    /**
+     * 
+     */
+    public function append(string $content)
+    {
+        $this->append .= $content;
+    }
+    /**
+     * 
+     */
+    public function layout(string $name = null)
+    {
+        $name = DataCleanerHelper::cleanValue($name);
+        $path = config('CLOSURES.PATH')('RESOURCES') . "layouts/{$name}.php";
+        if (file_exists($path)) {
+            $this->layout = $path;
+        } else {
+            $altPath = requireConfig('PATHS.ROOT') . "{$name}.php";
+            if (file_exists($altPath)) {
+                $this->layout = $altPath;
+            } else {
+                throw new Exception('Layout File Not Found : ' . $name);
+            }
+        }
     }
     private function header(string $name, array $bag = null)
     {
-        $path = config('PATHS.EXPAND')('RESOURCES') . "headers/{$name}.php";
+        $path = config('CLOSURES.PATH')('RESOURCES') . "headers/{$name}.php";
         return $this->loadFile($path, $bag);
     }
     private function footer(string $name, array $bag = null)
     {
-        $path = config('PATHS.EXPAND')('RESOURCES') . "footers/{$name}.php";
+        $path = config('CLOSURES.PATH')('RESOURCES') . "footers/{$name}.php";
         return $this->loadFile($path, $bag);
     }
     /**
@@ -67,7 +111,7 @@ class View
      */
     private function section(string $name, array $bag = null)
     {
-        $path = config('PATHS.EXPAND')('RESOURCES') . "sections/{$name}.php";
+        $path = config('CLOSURES.PATH')('RESOURCES') . "sections/{$name}.php";
         return $this->loadFile($path, $bag);
     }
     /**
@@ -76,14 +120,14 @@ class View
     private function loadFile(string $path, array $bag = null)
     {
         // file local pre-defined variables
-        $viewData = $this->viewData ?? null;
-        $layout = $this->viewData->layout ?? null;
-        $controller = $this->viewData->controller ?? null;
-        $model = $this->viewData->model ?? null;
+        $controller = $this->controller ?? null;
+        $layout = $this->layout ?? null;
+        $viewData = $this->currentView ?? null;
+        $model = $viewData->model ?? null;
         if (is_null($bag)) {
             if (! is_null($viewData)
             && ! is_null($viewData->bag)) {
-                $bag = &$this->viewData->bag;
+                $bag = &$this->currentView->bag;
             } else {
                 $bag = [];
             }
@@ -99,54 +143,50 @@ class View
     /**
      * 
      */
-    private function body()
-    {
-        return $this->viewData->body ?? '';
-    }
-    /**
-     * 
-     */
     public function hasRendered()
     {
-        return $this->viewData->hasRendered;
+        return $this->hasRendered;
     }
     /**
      * 
      */
     public function render()
     {
-        if (is_null($this->viewData)
-        || ! $this->viewData->valid()
-        || $this->viewData->hasRendered == true) {
+        if (! is_array($this->viewData)
+        || empty($this->viewData)
+        || $this->hasRendered == true) {
             return false;
         }
 
-        // render viewData
+        $view = false;
+        $body = '';
+        // buffer view
         ob_start();
-        $view = $this->loadFile($this->viewData->path ?? '');
-        $body = ob_get_clean();
-        if ($view !== false) {
-            // render layout
-            if (! is_null($this->viewData->layout)) {
-                // include body within layout
-                $this->viewData->body = $body;
-                $layout = $this->loadFile($this->viewData->layout ?? '');
-                $content = ob_get_clean();
-                if ($layout) {
-                    $this->viewData->hasRendered = true;
-                    // print view
-                    echo $content . $this->viewData->append;
-                } else {
-                    ob_clean();
-                }
+        foreach ($this->viewData as $view) {
+            if ($this->loadFile($view->path)) {
+                $body .= ob_get_clean();
             } else {
-                $this->viewData->hasRendered = true;
-                // print view
-                echo $body;
-                ob_flush();
+                ob_clean();
             }
         }
-        ob_start();
-        ob_clean();
+        // buffer layout
+        if (is_null($this->layout)) {
+            $this->hasRendered = true;
+            // render view
+            echo $body . $this->append;
+            ob_flush();
+        } else {
+            // include body within layout
+            $this->content = $body;
+            $layout = $this->loadFile($this->layout ?? '');
+            $content = ob_get_clean();
+            if ($layout) {
+                $this->hasRendered = true;
+                // render view
+                echo $content . $this->append;
+            } else {
+                ob_clean();
+            }
+        }
     }
 }

@@ -3,7 +3,7 @@
  * Generates Navbar from $bag
  */
 if (isset($bag['links'])) {
-    $uri = $this->viewData->controller->getRequest()->uri;
+    $uri = $this->controller->getRequest()->uri;
     $links = $bag['links'];
     $leftLinks = [];
     $rightLinks = [];
@@ -12,7 +12,7 @@ if (isset($bag['links'])) {
             if (isset($link['link'])) {
                 $linkObj = [
                     'name' => $name,
-                    'link' => config('LINKS.EXPAND')('PUBLIC') . $link['link'],
+                    'link' => config('CLOSURES.LINK')('PUBLIC') . $link['link'],
                     'active' => ($link['link'] === $uri) ? 'active' : '',
                 ];
                 if (isset($link['align'])) {

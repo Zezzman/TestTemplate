@@ -32,7 +32,7 @@ final class CollectionController extends APIController
             foreach ($files as $file) {
                 $collection['navigation'][$folder] = [
                     'name' => \App\Helpers\DataCleanerHelper::dataMap($folder, '/', function ($result, $item) {return $item;}, 0, -1),
-                    'url' => (config('LINKS.EXPAND')('PUBLIC') . $folder)
+                    'url' => (config('CLOSURES.LINK')('PUBLIC') . $folder)
                 ];
                 if (\App\Providers\FileProvider::checkExtension($file->extension(), ['jpeg','jpg','png'])) {
                     $collection['images'][] = [

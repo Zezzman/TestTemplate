@@ -1,6 +1,6 @@
 <?php
 // URI locations
-$domain = config('DOMAIN');
+$domain = requireConfig('DOMAIN');
 return [
     'LINKS' => [
         // Application Link
@@ -12,6 +12,8 @@ return [
         'PLUGINS' => 'assets/plugins/',
         // Storage Directory
         'STORAGE' => 'storage/',
-        'EXPAND' => function (string $constant, $default = false) use ($domain) { return $domain . config('LINKS.' . $constant, $default); }
+    ],
+    'CLOSURES' => [
+        'LINK' => function (string $constant, $default = false) use ($domain) { return $domain . config('LINKS.' . $constant, $default); }
     ]
 ];

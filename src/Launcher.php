@@ -238,8 +238,16 @@ final class Launcher
                 $params = array_values($params);
                 if (is_array($params) && count($params) > 0) {
                     $method = $class->$action(...$params);
+                    if ($method instanceof \App\View
+                    && ! $method->hasRendered()) {
+                        $method->render();
+                    }
                 } else {
                     $method = $class->$action();
+                    if ($method instanceof \App\View
+                    && ! $method->hasRendered()) {
+                        $method->render();
+                    }
                 }
                 return $class;
             } else {

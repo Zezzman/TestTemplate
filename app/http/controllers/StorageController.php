@@ -20,6 +20,6 @@ final class StorageController extends Controller
         if (is_array($location) && ! empty($location)) {
             $path = array_reduce($location, function($str, $item) { return $str . '/' . $item; });
         }
-        $this->view('storage', $viewModel, ['path' => $path ?? '', 'extensions' => $extensions]);
+        return $this->view('storage', $viewModel, ['path' => $path ?? '', 'extensions' => $extensions]);
     }
 }

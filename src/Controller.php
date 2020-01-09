@@ -25,7 +25,6 @@ class Controller implements IController
     private $request = null;
     private $exception = null;
     protected $view = null;
-    protected $pauseRender = false;
     
     /**
      * Setup Controller request
@@ -50,20 +49,21 @@ class Controller implements IController
      */
     public function view(string $name = '', IViewModel $model = null, array $bag = [])
     {
-        if (is_null($this->view)) {
-            if (! empty($name)) {
-                try {
-                    $this->view = View::create($this, $name, $model, $bag, $this->pauseRender);
-                } catch (RespondingException $e) {
-                    $this->error($e->respondCode(), $e);
-                } catch (PDOException $e) {
-                    $this->error(503, $e);
-                } catch (Exception $e) {
-                    $this->error(500, $e);
+        if (! empty($name)) {
+            try {
+                if (is_null($this->view)) {
+                    $this->view = View::create($this, $name, $model, $bag);
+                } else {
+                    $this->view->appendView($name, $model, $bag);
                 }
+            } catch (RespondingException $e) {
+                $this->error($e->respondCode(), $e);
+            } catch (PDOException $e) {
+                $this->error(503, $e);
+            } catch (Exception $e) {
+                $this->error(500, $e);
             }
         }
-
         return $this->view;
     }
     /**
@@ -75,21 +75,6 @@ class Controller implements IController
     public function error(int $code, Exception $exception = null)
     {
         self::respond($code, '', $this->request, $exception);
-    }
-    /**
-     * Continue View rendering
-     */
-    public function continueRender()
-    {
-        $this->pauseRender = false;
-        $this->render();
-    }
-    /**
-     * Pause View rendering
-     */
-    public function pauseRender()
-    {
-        $this->pauseRender = true;
     }
     /**
      * Redirect view

@@ -12,7 +12,7 @@ $this->section('navbar', [
 ?>
 
 <body>
-    <?= $this->body();?>
+    <?= $this->content; ?>
 </body>
 
 <?php $this->footer('footer'); ?>

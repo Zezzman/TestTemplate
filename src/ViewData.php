@@ -2,57 +2,27 @@
 namespace App;
 
 use App\Interfaces\IView;
-use App\Interfaces\IController;
+use App\Interfaces\IViewModel;
 use App\Helpers\DataCleanerHelper;
 /**
  * 
  */
 class ViewData implements IView
 {
-    public $hasRendered = false;
     public $name = null;
     public $path = null;
-    public $layout = null;
     public $model = null;
-    public $controller = null;
     public $bag = [];
-    public $append = '';
-    public $body = '';
 
     /**
      * 
      */
-    public function __construct(string $name, IController $controller)
+    public function __construct(string $name, string $path, IViewModel $model = null, array $bag = [])
     {
         $this->name = $name;
-        $this->controller = $controller;
-        if (config('LAYOUT.DEFAULT') !== false) {
-            $this->setLayout(config('LAYOUT.DEFAULT'));
-        }
-    }
-    /**
-     * 
-     */
-    public function setLayout(string $name = null)
-    {
-        if (is_null($name)) {
-            $this->layout = null;
-        } else {
-            $name = trim($name, '/');
-            $name = DataCleanerHelper::cleanValue($name);
-            $path = "/{$name}.php";
-    
-            if (file_exists($path)) {
-                $this->layout = $path;
-            } else {
-                $path = config('PATHS.EXPAND')('RESOURCES'). "layouts/{$name}.php";
-                if (file_exists($path)) {
-                    $this->layout = $path;
-                } else {
-                    throw new Exception('Layout File Not Found');
-                }
-            }
-        }
+        $this->path = $path;
+        $this->model = $model;
+        $this->bag = $bag;
     }
     /**
      * 
@@ -60,7 +30,7 @@ class ViewData implements IView
     public function link()
     {
         if (! is_null($this->controller->getRequest())) {
-            return config('LINKS.EXPAND')('PUBLIC') . $this->controller->getRequest()->uri;
+            return config('CLOSURES.LINK')('PUBLIC') . $this->controller->getRequest()->uri;
         }
         return '';
     }
