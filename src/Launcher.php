@@ -316,7 +316,7 @@ function requireConfig(string $constant)
 {
     $value = config($constant, null);
     if (is_null($value) || (is_string($value) && empty($value))) {
-        throw new Exception('Empty Required Configuration');
+        throw new Exception('Empty Required Configuration: ' . $constant);
     }
     return $value;
 }

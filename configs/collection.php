@@ -2,7 +2,7 @@
 return [
     'COLLECTION' => [
         'DIRECTORIES' => [
-            '/storage/pictures'
+            'storage/'
         ]
     ]
 ];

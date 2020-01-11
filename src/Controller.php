@@ -124,9 +124,9 @@ class Controller implements IController
             $name = config('PATHS.RESOURCES') . 'responses/' . $code;
             try {
                 if (is_file($name . '.php')) {
-                    $respond->view = View::create($respond, $name, $viewModel);
+                    View::create($respond, $name, $viewModel)->render();
                 } else {
-                    $respond->view = View::create($respond, requireConfig('PATHS.RESOURCES') . 'responses/index', $viewModel);
+                    View::create($respond, requireConfig('PATHS.RESOURCES') . 'responses/index', $viewModel)->render();
                 }
             } catch (Exception $e) {
                 if (config('DEBUG')) {

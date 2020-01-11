@@ -2,6 +2,6 @@
 return [
     'LAYOUT' => [
         // Default Layout set to layout.php
-        'DEFAULT' => 'layout',
+        'DEFAULT' => requireConfig('PATHS.RESOURCES') . 'layouts/layout',
     ]
 ];

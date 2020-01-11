@@ -45,17 +45,16 @@ final class FileProvider
      * 
      * @return  array    An array of file instances
      */
-    public static function scan(string $dir, array $allowExtensions = [])
+    public static function scan(string $folder, array $allowExtensions = [])
     {
         $files = [];
-        $root = requireConfig('PATHS.ROOT');
-        $dir = trim($dir, '/') . DIRECTORY_SEPARATOR;
-        if (is_dir($root . $dir)) {
-            $names = scandir($root . $dir);
+        $dir = requireConfig('PATHS.ROOT') . $folder;
+        if (is_dir($dir)) {
+            $names = scandir($dir);
             foreach ($names as $name) {
                 if (! preg_match('/(^|\s)[\.]/', $name)) {
-                    if (is_file($root . $dir . $name)) {
-                        $file = self::create($dir . $name);
+                    if (is_file($dir . $name)) {
+                        $file = self::create($folder . $name);
                         if ($file->isValid()) {
                             if (self::checkExtension($file->extension(), $allowExtensions)) {
                                 $files[] = $file;
@@ -81,7 +80,6 @@ final class FileProvider
         $files = [];
         $root = requireConfig('PATHS.ROOT');
         foreach ($folders as $folder) {
-            $folder = trim($folder, '/') . DIRECTORY_SEPARATOR;
             $dir = $root . $folder;
             if (is_dir($dir)) {
                 $files[$folder] = [];

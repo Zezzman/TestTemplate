@@ -1,4 +1,5 @@
 <?php
+// Permissions for what the user is allowed to do
 return [
     'AUTH' => [
         'ADMIN' => [],

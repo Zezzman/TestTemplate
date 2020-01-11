@@ -11,12 +11,12 @@ final class FileHelper extends Helper
     /**
      * Loads content of file and scans for codes
      */
-    public static function loadFile(string $path, array $codes = null, array $defaults = [])
+    public static function loadFile(string $path, array $codes = null, array $defaults = [], bool $list = false, int $listLength = 0, bool $allowEmpty = false)
     {
         if (file_exists($path) && is_file($path)) {
             if (! is_null($codes)) {
                 $content = file_get_contents($path);
-                return QueryHelper::scanCodes($codes, $content, $defaults);
+                return QueryHelper::scanCodes($codes, $content, $defaults, $list, $listLength, $allowEmpty);
             } else {
                 return file_get_contents($path);
             }

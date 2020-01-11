@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php 
-$this->header('header');
+$this->header('resources/headers/header');
 
 $links = config('NAV', [
     'Home' => ['link' => 'home/'],
 ]);
-$this->section('navbar', [
+$this->section('resources/sections/navbar', [
     'links' => config('NAV', ['Home' => ['link' => 'home/']])
 ]);
 ?>
@@ -15,6 +15,6 @@ $this->section('navbar', [
     <?= $this->content; ?>
 </body>
 
-<?php $this->footer('footer'); ?>
+<?php $this->footer('resources/footers/footer'); ?>
 
 </html>

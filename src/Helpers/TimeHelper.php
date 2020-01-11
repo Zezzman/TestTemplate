@@ -10,6 +10,11 @@ final class TimeHelper extends Helper
     protected $datePhase = null;
     protected $dateString = null;
     protected $microtime = null;
+
+    public function __toString()
+    {
+        return $this->format();
+    }
     /**
      * Create date instance
      * 

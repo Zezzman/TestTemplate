@@ -15,25 +15,63 @@ class ViewFactory
      */
     public static function createView(string $name, IViewModel $model = null, array $bag = null)
     {
-        return new ViewData($name, self::secureViewPath($name), $model, $bag);
+        return new ViewData($name, self::viewPath($name), $model, $bag);
+    }
+
+    /**
+     * 
+     */
+    public static function viewPath(string $name)
+    {
+        return self::securePath($name, 'views/');
     }
     /**
      * 
      */
-    private static function secureViewPath(string $name)
+    public static function layoutPath(string $name)
+    {
+        return self::securePath($name, config('PATHS.RESOURCES') . 'layouts/');
+    }
+    /**
+     * 
+     */
+    public static function headerPath(string $name)
+    {
+        return self::securePath($name, config('PATHS.RESOURCES') . 'headers/');
+    }
+    /**
+     * 
+     */
+    public static function footerPath(string $name)
+    {
+        return self::securePath($name, config('PATHS.RESOURCES') . 'footers/');
+    }
+    /**
+     * 
+     */
+    public static function sectionPath(string $name)
+    {
+        return self::securePath($name, config('PATHS.RESOURCES') . 'sections/');
+    }
+    private static function securePath(string $name, $offsetFolder = null)
     {
         $name = DataCleanerHelper::cleanValue($name);
-        $path = config('CLOSURES.PATH')('APP') . "views/{$name}.php";
-        if (file_exists($path)) {
+
+        $root = requireConfig('PATHS.ROOT');
+        if (file_exists($path = $root . ($offsetFolder ?? '') . "{$name}.php"))
             return $path;
-        } else {
-            $altPath = requireConfig('PATHS.ROOT') . "{$name}.php";
-            if (file_exists($altPath)) {
-                return $altPath;
-            } else {
-                throw new Exception('Missing View file : ' . $name);
-                exit();
-            }
-        }
+        if (file_exists($path = $root .  "{$name}.php"))
+            return $path;
+        
+            
+        $app = $root . requireConfig('PATHS.APP');
+        if (file_exists($path = $app . ($offsetFolder ?? '') . "{$name}.php"))
+            return $path;
+        if (file_exists($path = $app . "{$name}.php"))
+            return $path;
+        
+
+        throw new Exception('Missing file : ' . ($offsetFolder ?? '') . $name);
+        exit();
     }
 }

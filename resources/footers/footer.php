@@ -5,5 +5,5 @@
 		<?= config('APP.COPYRIGHT.DATE');?>
 		<?= config('APP.AUTHOR');?>
 	</div>
-	<?php $this->footer('footer-scripts'); ?>
+	<?php $this->footer('resources/footers/footer-scripts'); ?>
 </footer>

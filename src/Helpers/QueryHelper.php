@@ -153,7 +153,6 @@ final class QueryHelper extends Helper
     public static function mapCodesList(array &$codes, string $subject, string $pattern, Closure $callback, int $listLength = 0, bool $allowEmpty = false, int &$counter = 0)
     {
         $mapCodes = function () use ($pattern, $callback, $subject, $allowEmpty, &$counter) {
-            $counter = 0;
             $message = preg_replace_callback($pattern, $callback, $subject);
             if ($allowEmpty === true || $counter !== 0) {
                 return $message;
@@ -171,6 +170,7 @@ final class QueryHelper extends Helper
                 $codes = (is_object($commands[$key]))? (array) $commands[$key]: $commands[$key];
                 if (is_array($codes)) {
                     $codes['KEY'] = $key;
+                    $counter = 0;
                     $message .= $mapCodes();
                 } else {
                     if (is_string($codes) || is_numeric($codes)) {
@@ -178,6 +178,7 @@ final class QueryHelper extends Helper
                             'KEY' => $key,
                             'VALUE' => $codes
                         ];
+                        $counter = 0;
                         $message .= $mapCodes();
                     }
                 }

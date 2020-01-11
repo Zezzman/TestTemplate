@@ -6,6 +6,7 @@ use App\Interfaces\IController;
 use App\Interfaces\IViewModel;
 use App\Factories\ViewFactory;
 use App\Helpers\DataCleanerHelper;
+use Exception;
 /**
  * View
  * 
@@ -83,36 +84,22 @@ class View
      */
     public function layout(string $name = null)
     {
-        $name = DataCleanerHelper::cleanValue($name);
-        $path = config('CLOSURES.PATH')('RESOURCES') . "layouts/{$name}.php";
-        if (file_exists($path)) {
-            $this->layout = $path;
-        } else {
-            $altPath = requireConfig('PATHS.ROOT') . "{$name}.php";
-            if (file_exists($altPath)) {
-                $this->layout = $altPath;
-            } else {
-                throw new Exception('Layout File Not Found : ' . $name);
-            }
-        }
+        $this->layout = ViewFactory::layoutPath($name);
     }
     private function header(string $name, array $bag = null)
     {
-        $path = config('CLOSURES.PATH')('RESOURCES') . "headers/{$name}.php";
-        return $this->loadFile($path, $bag);
+        return $this->loadFile(ViewFactory::headerPath($name), $bag);
     }
     private function footer(string $name, array $bag = null)
     {
-        $path = config('CLOSURES.PATH')('RESOURCES') . "footers/{$name}.php";
-        return $this->loadFile($path, $bag);
+        return $this->loadFile(ViewFactory::footerPath($name), $bag);
     }
     /**
      * 
      */
     private function section(string $name, array $bag = null)
     {
-        $path = config('CLOSURES.PATH')('RESOURCES') . "sections/{$name}.php";
-        return $this->loadFile($path, $bag);
+        return $this->loadFile(ViewFactory::sectionPath($name), $bag);
     }
     /**
      * 
