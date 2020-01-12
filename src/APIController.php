@@ -2,6 +2,7 @@
 namespace App;
 
 use App\Interfaces\IRequest;
+use App\Interfaces\IController;
 use App\Models\HttpRequestModel;
 use App\Helpers\DataCleanerHelper;
 use Exception;
@@ -12,7 +13,7 @@ use Exception;
  * 
  * @author  Francois Le Roux <francoisleroux97@gmail.com>
  */
-abstract class APIController
+abstract class APIController implements IController
 {
     protected $request = null;
     protected $exception = null;
@@ -21,7 +22,7 @@ abstract class APIController
 
     protected function Options() {}
         
-    public function Request()
+    public function getRequest()
     {
         return $this->request ?? HttpRequestModel::empty();
     }

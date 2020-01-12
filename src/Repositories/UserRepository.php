@@ -6,6 +6,7 @@ use App\Repository;
 use App\Traits\Feedback;
 use App\Helpers\QueryHelper;
 use App\Helpers\ArrayHelper;
+use App\Providers\DatabaseProvider;
 /**
  * access and store information i.e. interact with database
  */
@@ -13,11 +14,15 @@ class UserRepository extends Repository
 {
     use Feedback;
 
+    public function connect()
+    {
+        return DatabaseProvider::connectMySQL();
+    }
     /**
      * 
      */
     public function getUserWithUsername(string $username){
-        if (is_null($this->connection)) {
+        if (is_null($this->connection())) {
             $this->feedback('No database connection');
             return false;
         }
@@ -25,7 +30,7 @@ class UserRepository extends Repository
         $sql = "SELECT id, username, email, first_name, last_name"
                 ." FROM vw_users"
                 ." WHERE username LIKE :username";
-        $result = $this->connection::prepare($sql, ['username' => $username], \PDO::FETCH_ASSOC);
+        $result = $this->connection()::prepare($sql, ['username' => $username], \PDO::FETCH_ASSOC);
         if (is_array($result)) {
             return $result;
         }
@@ -36,7 +41,7 @@ class UserRepository extends Repository
      * 
      */
     public function getUserWithID(int $id){
-        if (is_null($this->connection)) {
+        if (is_null($this->connection())) {
             $this->feedback('No database connection');
             return false;
         }
@@ -44,7 +49,7 @@ class UserRepository extends Repository
         $sql = "SELECT id, username, email, first_name, last_name"
                 ." FROM vw_users"
                 ." WHERE id LIKE :id";
-        $result = $this->connection::prepare($sql, ['id' => $id], \PDO::FETCH_ASSOC);
+        $result = $this->connection()::prepare($sql, ['id' => $id], \PDO::FETCH_ASSOC);
         if (is_array($result)) {
             return $result;
         }
@@ -55,7 +60,7 @@ class UserRepository extends Repository
      * 
      */
     public function getUserUploadsWithID(int $id){
-        if (is_null($this->connection)) {
+        if (is_null($this->connection())) {
             $this->feedback('No database connection');
             return false;
         }
@@ -63,7 +68,7 @@ class UserRepository extends Repository
         $sql = "SELECT user_id, file_path, upload_timestamp, updated_timestamp"
                 ." FROM vw_user_uploads"
                 ." WHERE user_id LIKE :user_id";
-        $result = $this->connection::prepare($sql, ['user_id' => $id], \PDO::FETCH_ASSOC, true);
+        $result = $this->connection()::prepare($sql, ['user_id' => $id], \PDO::FETCH_ASSOC, true);
         if (is_array($result)) {
             return $result;
         }
@@ -74,7 +79,7 @@ class UserRepository extends Repository
      * 
      */
     public function updateUserFromID(int $id, IUser $user){
-        if (is_null($this->connection)) {
+        if (is_null($this->connection())) {
             $this->feedback('No database connection');
             return false;
         }
@@ -82,7 +87,7 @@ class UserRepository extends Repository
         if ($id > 0) {
             if ($user->hasRequiredUpdateFields()) {
                 $sql = "CALL sp_users_updateUser(:id, :username, :email, :first_name, :last_name)";
-                $result = $this->connection::prepare($sql, [
+                $result = $this->connection()::prepare($sql, [
                     'id' => $id,
                     'username' => $user->username,
                     'email' => $user->email,
@@ -107,14 +112,14 @@ class UserRepository extends Repository
      * 
      */
     public function getUsers(){
-        if (is_null($this->connection)) {
+        if (is_null($this->connection())) {
             $this->feedback('No database connection');
             return false;
         }
 
         $sql = "SELECT id, username, email, first_name, last_name"
                 ." FROM vw_users";
-        $result = $this->connection::prepare($sql, null, \PDO::FETCH_ASSOC, true);
+        $result = $this->connection()::prepare($sql, null, \PDO::FETCH_ASSOC, true);
         if (is_array($result)) {
             return $result;
         }
@@ -125,7 +130,7 @@ class UserRepository extends Repository
      * 
      */
     public function getUsersWithID(array $id){
-        if (is_null($this->connection)) {
+        if (is_null($this->connection())) {
             $this->feedback('No database connection');
             return false;
         }
@@ -135,7 +140,7 @@ class UserRepository extends Repository
             $sql = ("SELECT id, username, email, first_name, last_name"
                     ." FROM vw_users"
                     ." WHERE " . QueryHelper::arrayToStatements($id, 'id', 'LIKE', 'OR'));
-            $result = $this->connection::prepare($sql, $id, \PDO::FETCH_ASSOC, true);
+            $result = $this->connection()::prepare($sql, $id, \PDO::FETCH_ASSOC, true);
             if (is_array($result)) {
                 return $result;
             } else {
@@ -152,16 +157,16 @@ class UserRepository extends Repository
      */
     public function uniqueUsername(string $username){
         
-        if (is_null($this->connection)) {
+        if (is_null($this->connection())) {
             $this->feedback('No database connection');
             return false;
         }
         $sql = "CALL sp_users_usernameExist(:username, @exists)";
-        $result = $this->connection::prepare($sql, [
+        $result = $this->connection()::prepare($sql, [
             'username' => $username
         ]);
         $sql = "SELECT @exists as 'exists'";
-        $result = $this->connection::prepare($sql, null, \PDO::FETCH_ASSOC);
+        $result = $this->connection()::prepare($sql, null, \PDO::FETCH_ASSOC);
         if (is_array($result) && isset($result['exists']) && $result['exists'] === 1) {
             $this->feedback('Username already exists', 0, 'Username');
             return false;
@@ -173,16 +178,16 @@ class UserRepository extends Repository
      */
     public function uniqueEmail(string $email){
         
-        if (is_null($this->connection)) {
+        if (is_null($this->connection())) {
             $this->feedback('No database connection');
             return false;
         }
         $sql = "CALL sp_users_emailExist(:email, @exists)";
-        $result = $this->connection::prepare($sql, [
+        $result = $this->connection()::prepare($sql, [
             'email' => $email
         ]);
         $sql = "SELECT @exists as 'exists'";
-        $result = $this->connection::prepare($sql, null, \PDO::FETCH_ASSOC);
+        $result = $this->connection()::prepare($sql, null, \PDO::FETCH_ASSOC);
         if (is_array($result) && isset($result['exists']) && $result['exists'] === 1) {
             $this->feedback('Email already exists', 0, 'Email');
             return false;

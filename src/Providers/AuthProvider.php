@@ -8,7 +8,7 @@ use App\Helpers\HTTPHelper;
 use App\Helpers\DataCleanerHelper;
 use App\Models\UserAuthModel;
 use App\Providers\SessionProvider;
-use App\Exceptions\RespondingException;
+use App\Exceptions\RespondException;
 /**
  * Provides Authorization of users
  * 
@@ -164,7 +164,7 @@ final class AuthProvider
         if (SessionProvider::set('username', $user->username)) {
             return true;
         } else {
-            throw new RespondingException(500, 'No active session');
+            throw new RespondException(500, 'No active session');
         }
     }
     /**

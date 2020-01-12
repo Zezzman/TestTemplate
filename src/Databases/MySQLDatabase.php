@@ -5,7 +5,7 @@ use App\Interfaces\IDatabase;
 use App\Controller;
 use PDO;
 use PDOException;
-use App\Exceptions\RespondingException;
+use App\Exceptions\RespondException;
 /**
  *
  * @author  Francois Le Roux <francoisleroux97@gmail.com>
@@ -13,12 +13,17 @@ use App\Exceptions\RespondingException;
 class MySQLDatabase implements IDatabase
 {
     public const TYPE = 'MySQL';
+    private static $instance = null;
     private static $db = null;
 
     private function __construct() {}
     public static function instance()
     {
-        return new self();
+        if (isset(self::$instance)) {
+            return self::$instance;
+        } else {
+            return new self();
+        }
     }
     /**
      * 
@@ -56,7 +61,7 @@ class MySQLDatabase implements IDatabase
                 return true;
             }
         } else {
-            throw new RespondingException(503, 'Empty database configurations');
+            throw new RespondException(503, 'Empty database configurations');
         }
     }
     /**
@@ -117,7 +122,7 @@ class MySQLDatabase implements IDatabase
     /**
      * 
      */
-    public static function logError($userID, $message, $ip = null)
+    public static function logError(int $userID, string $message, $ip = null)
     {
         $fields = array(
             'user_id' => $userID,

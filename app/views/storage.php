@@ -2,12 +2,13 @@
 $path = trim($bag['path'], '/');
 if (isset($path) && ! empty($path)) {
     if (is_file(config('CLOSURES.PATH')('STORAGE') . $path)) {
-        $file = \App\Providers\FileProvider::create('storage/' . $path);
-        if (! $file->isValid()) {
-            return false;
+        $file = \App\Providers\FileProviders\MediaFileProvider::create('storage/' . $path);
+        if (is_null($file)
+        || ! $file->isValid()) {
+            throw new \App\Exceptions\RespondException(415, "");
         }
         if ($file->read() === false) {
-            return false;
+            throw new \App\Exceptions\RespondException(415, "");
         }
     }
 }

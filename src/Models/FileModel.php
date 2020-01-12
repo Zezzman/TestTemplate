@@ -48,7 +48,8 @@ class FileModel
     public function type()
     {
         if ($this->isValid()) {
-            return mime_content_type($this->path());
+            $path = $this->path();
+            return mime_content_type($path);
         } else {
             return false;
         }

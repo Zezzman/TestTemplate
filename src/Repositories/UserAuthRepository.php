@@ -13,7 +13,7 @@ class UserAuthRepository extends UserRepository
      * 
      */
     public function getUserAuthWithUsername(string $username){
-        if (is_null($this->connection)) {
+        if (is_null($this->connection())) {
             $this->feedback('No database connection');
             return false;
         }
@@ -21,7 +21,7 @@ class UserAuthRepository extends UserRepository
         $sql = "SELECT username, password"
                 ." FROM vw_users_auth"
                 ." WHERE username LIKE :username";
-        $result = $this->connection::prepare($sql, ['username' => $username], \PDO::FETCH_ASSOC);
+        $result = $this->connection()::prepare($sql, ['username' => $username], \PDO::FETCH_ASSOC);
         if (is_array($result)) {
             return $result;
         }
@@ -32,14 +32,14 @@ class UserAuthRepository extends UserRepository
      * 
      */
     public function addUser(IUserAuth $user){
-        if (is_null($this->connection)) {
+        if (is_null($this->connection())) {
             $this->feedback('No database connection');
             return false;
         }
         if ($user->hasRequiredSignUpFields()) {
             // add new user to database
             $sql = "CALL sp_users_addUser(:username, :password, :email, :firstName, :lastName)";
-            $result = $this->connection::prepare($sql, [
+            $result = $this->connection()::prepare($sql, [
                 'username' => $user->username,
                 'password' => $user->password,
                 'email' => $user->email,

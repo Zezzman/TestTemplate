@@ -5,7 +5,7 @@ use Exception;
 /**
  * Exception to send http respond codes with exceptions
  */
-class RespondingException extends Exception
+class RespondException extends Exception
 {
     private $respondCode = null;
 

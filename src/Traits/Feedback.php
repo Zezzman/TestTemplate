@@ -18,8 +18,12 @@ trait Feedback
     }
     public function mergeFeedback($feedback)
     {
-        if ($feedback->hasFeedback()) {
-            $this->feedbacks = array_merge($this->feedbacks, $feedback->getFeedback());
+        if (is_array($feedback)) {
+            $this->feedbacks = array_merge($this->feedbacks, $feedback);
+        } else if (method_exists($feedback, 'hasFeedback')) {
+            if ($feedback->hasFeedback()) {
+                $this->feedbacks = array_merge($this->feedbacks, $feedback->getFeedback());
+            }
         }
     }
     public function getFeedback()

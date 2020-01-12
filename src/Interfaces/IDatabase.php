@@ -25,13 +25,9 @@ interface IDatabase
     /**
      * 
      */
-    static function prepare($query, array $params = null, int $fetch = null, bool $group = false);
-    /**
-     * 
-     */
     static function lastID();
     /**
      * 
      */
-    static function logError($user_id, $message, $ip = '');
+    static function logError(int $user_id, string $message, $ip = '');
 }

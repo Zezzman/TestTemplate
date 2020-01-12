@@ -2,16 +2,21 @@
 namespace App;
 
 use App\Interfaces\IRepository;
-use App\Providers\DatabaseProvider;
+use Exception;
 /**
  * 
  */
 abstract class Repository implements IRepository
 {
-    protected $connection;
+    private $connection;
 
     public function __construct()
     {
-        $this->connection = DatabaseProvider::connectMySQL();
+        $this->connection = $this->connect();
     }
+    public function connection()
+    {
+        return $this->connection;
+    }
+    abstract public function connect();
 }

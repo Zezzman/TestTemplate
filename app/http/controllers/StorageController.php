@@ -2,7 +2,6 @@
 namespace App\Controllers;
 
 use App\Controller;
-use App\Providers\FileProvider;
 use App\Helpers\DataCleanerHelper;
 use App\ViewModels\ViewModel;
 

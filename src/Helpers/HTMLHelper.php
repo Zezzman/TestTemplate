@@ -4,7 +4,7 @@ namespace App\Helpers;
 use App\Helper;
 use App\Helpers\QueryHelper;
 use App\Helpers\DataCleanerHelper;
-use App\Providers\FileProvider;
+use App\Providers\FileProviders\MediaFileProvider;
 /**
  * Helper for HTML
  */
@@ -50,7 +50,7 @@ final class HTMLHelper extends Helper
         $html = '';
         if (! empty($dir)) {
             $linkBase = rtrim($linkBase ?? config('CLOSURES.LINK')('PUBLIC'), '/');
-            $files = FileProvider::listFiles($dir, $includeFolders);
+            $files = MediaFileProvider::listFiles($dir, $includeFolders);
             foreach ($files as $file) {
                 $html .= '<a href="' . $linkBase . '/' . DataCleanerHelper::dataMap($file, '/')
                 . '" style="display:block">' . DataCleanerHelper::dataMap($file, '/', null, 0, -1) . '</a>';

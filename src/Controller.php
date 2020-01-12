@@ -7,7 +7,7 @@ use App\Interfaces\IViewModel;
 use App\Providers\SessionProvider;
 use App\Helpers\HTTPHelper;
 use App\Helpers\DataCleanerHelper;
-use App\Exceptions\RespondingException;
+use App\Exceptions\RespondException;
 use App\Models\HttpRequestModel;
 use App\ViewModels\ViewModel;
 use App\ViewModels\ExceptionViewModel;
@@ -56,7 +56,7 @@ class Controller implements IController
                 } else {
                     $this->view->appendView($name, $model, $bag);
                 }
-            } catch (RespondingException $e) {
+            } catch (RespondException $e) {
                 $this->error($e->respondCode(), $e);
             } catch (PDOException $e) {
                 $this->error(503, $e);
@@ -92,7 +92,6 @@ class Controller implements IController
      */
     public static function respond(int $code, string $message = null, IRequest $request = null, Exception $exception = null)
     {
-        ob_start();
         ob_clean();
         $responses = \Launcher::Responses();
 

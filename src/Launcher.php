@@ -4,7 +4,7 @@ use App\APIController;
 use App\CLIController;
 use App\Interfaces\IRequest;
 use App\Providers\EnvironmentProvider;
-use App\Exceptions\RespondingException;
+use App\Exceptions\RespondException;
 /**
  * Handles App
  * 
@@ -138,7 +138,7 @@ final class Launcher
                 try {
                     http_response_code(200);
                     $controller = $this->executeController($request, $path, $action, $params);
-                } catch (RespondingException $e) {
+                } catch (RespondException $e) {
                     Controller::respond($e->respondCode(), '', $request, $e);
                 } catch (PDOException $e) {
                     Controller::respond(503, '', $request, $e);
@@ -177,7 +177,7 @@ final class Launcher
                     if (is_null($controller->getContent())) {
                         APIController::respond(204, '', $request);
                     }
-                } catch (RespondingException $e) {
+                } catch (RespondException $e) {
                     APIController::respond($e->respondCode(), '', $request, $e);
                 } catch (PDOException $e) {
                     APIController::respond(503, '', $request, $e);
@@ -212,7 +212,7 @@ final class Launcher
                 $path = config('NAMESPACES.CLI') . "{$controller}Controller";
                 try {
                     $controller = $this->executeController($request, $path, $action, $params);
-                } catch (RespondingException $e) {
+                } catch (RespondException $e) {
                     CLIController::respond($e->respondCode(), '', $request, $e);
                 } catch (PDOException $e) {
                     CLIController::respond(503, '', $request, $e);

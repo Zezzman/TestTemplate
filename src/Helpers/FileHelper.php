@@ -48,7 +48,6 @@ final class FileHelper extends Helper
     public static function readFile(string $path, string $type, bool $setHeader = true)
     {
         if (file_exists($path) && is_file($path)) {
-            ob_start();
             ob_clean();
             if ($setHeader) {
                 header('Content-Type: ' . $type);
@@ -141,5 +140,12 @@ final class FileHelper extends Helper
             }
         }
         return $html;
+    }
+    /**
+     * Store to File
+     */
+    public static function storeFile()
+    {
+
     }
 }

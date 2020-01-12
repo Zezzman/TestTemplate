@@ -1,9 +1,10 @@
 <?php
 namespace App;
 
+use App\Interfaces\IRequest;
+use App\Interfaces\IController;
 use App\Models\CLIRequestModel;
 use App\Helpers\DataCleanerHelper;
-use App\Interfaces\IRequest;
 use Exception;
 /**
  * Base class for cli controller classes
@@ -12,7 +13,7 @@ use Exception;
  * 
  * @author  Francois Le Roux <francoisleroux97@gmail.com>
  */
-class CLIController
+class CLIController implements IController
 {
     protected $request = null;
 

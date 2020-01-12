@@ -2,7 +2,7 @@
 namespace App\Providers;
 
 use App\Databases\MySQLDatabase;
-use App\Databases\PostgreSQLDatabase;
+use App\Databases\JSONDatabase;
 /**
  * Provides database
  * 
@@ -36,14 +36,14 @@ final class DatabaseProvider
         }
         return null;
     }
-    public static function connectPGSQL()
+    public static function connectJSON()
     {
         if (is_null(self::$connection)) {
-            PostgreSQLDatabase::connect();
-            self::$connection = PostgreSQLDatabase::DB();
-            self::$database = MySQLDatabase::instance();
+            JSONDatabase::connect();
+            self::$connection = JSONDatabase::DB();
+            self::$database = JSONDatabase::instance();
             return self::$database;
-        } elseif (self::$connection == PostgreSQLDatabase::DB()) {
+        } elseif (self::$connection == JSONDatabase::DB()) {
             return self::$database;
         }
         return null;

@@ -145,19 +145,20 @@ class View
             return false;
         }
 
-        $view = false;
+        $hasView = false;
         $body = '';
         // buffer view
         ob_start();
         foreach ($this->viewData as $view) {
             if ($this->loadFile($view->path)) {
                 $body .= ob_get_clean();
+                $hasView = true;
             } else {
                 ob_clean();
             }
         }
         // buffer layout
-        if (is_null($this->layout)) {
+        if (is_null($this->layout) || ! $hasView) {
             $this->hasRendered = true;
             // render view
             echo $body . $this->append;
