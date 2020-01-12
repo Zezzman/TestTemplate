@@ -8,7 +8,7 @@ if (isset($path) && ! empty($path)) {
             throw new \App\Exceptions\RespondException(415, "");
         }
         if ($file->read() === false) {
-            throw new \App\Exceptions\RespondException(415, "");
+            throw new \App\Exceptions\RespondException(204, "");
         }
     }
 }

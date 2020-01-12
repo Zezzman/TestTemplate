@@ -12,9 +12,6 @@ use App\Models\FileModel;
  */
 abstract class FileProvider
 {
-    // const MAX_SIZE = 4000000;
-    // const EXTENSIONS = ['jpeg','jpg','png', 'pdf'];
-    // const MIME = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
     const EXTENSIONS = [];
     const MIME = [];
     
