@@ -27,16 +27,6 @@ class ViewData implements IView
     /**
      * 
      */
-    public function link()
-    {
-        if (! is_null($this->controller->getRequest())) {
-            return config('CLOSURES.LINK')('PUBLIC') . $this->controller->getRequest()->uri;
-        }
-        return '';
-    }
-    /**
-     * 
-     */
     public function valid()
     {
         if (! is_null($this->name) && file_exists($this->path)) {

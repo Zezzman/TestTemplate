@@ -62,7 +62,7 @@ class HttpRequestModel extends RequestModel
     /**
      * 
      */
-    public function requireMethod(string $method)
+    public function requestMethod(string $method)
     {
         if ($this->method !== '' && $method !== ''
         && $this->method !== $method) {

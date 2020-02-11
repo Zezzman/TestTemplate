@@ -34,7 +34,7 @@ final class HttpRequestProvider
 
         foreach ($this->designatedRequests as $key => $request) {
             if ($this->request->matchRequest($request)) {
-                if ($this->request->requireMethod($request->method)) {
+                if ($this->request->requestMethod($request->method)) {
                     if (! $selectedRequest->valid()) {
                         $request->uri = $this->request->uri;
                         $selectedRequest = $request;
@@ -140,7 +140,7 @@ final class HttpRequestProvider
     /**
      * 
      */
-    public function requireMethod($method)
+    public function requestMethod($method)
     {
         if (! is_null($this->currentRequests) && $this->currentRequests->valid()) {
             $methods = (array) $method;

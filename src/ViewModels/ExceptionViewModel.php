@@ -13,6 +13,6 @@ class ExceptionViewModel extends ViewModel
 
     public function Exception()
     {
-        return (config('DEBUG') && ! is_null($this->exception)) ? var_dump($this->exception) : '';
+        return (config('PERMISSIONS.DEBUG') && ! is_null($this->exception)) ? var_dump($this->exception) : '';
     }
 }

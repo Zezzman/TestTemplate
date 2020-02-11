@@ -6,6 +6,7 @@ use App\Interfaces\IController;
 use App\Interfaces\IViewModel;
 use App\Factories\ViewFactory;
 use App\Helpers\DataCleanerHelper;
+use App\Helpers\HTTPHelper;
 use Exception;
 /**
  * View
@@ -175,6 +176,17 @@ class View
             } else {
                 ob_clean();
             }
+        }
+    }
+    /**
+     * 
+     */
+    public function link(string $uri = null, array $params = null)
+    {
+        if (is_null($uri) && ! is_null($this->controller->getRequest())) {
+            return config('CLOSURES.LINK')('PUBLIC') . $this->controller->getRequest()->uri;
+        } else {
+            return HTTPHelper::link($uri, $params);
         }
     }
 }

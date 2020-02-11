@@ -45,7 +45,7 @@ final class Launcher
             $instance->environment->setup();
             
             // Set debug output
-            if (config('DEBUG')) {
+            if (config('PERMISSIONS.DEBUG')) {
                 error_reporting(E_ALL);
                 ini_set('display_errors', E_ALL);
             }

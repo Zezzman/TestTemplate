@@ -1,7 +1,6 @@
 <?php
 namespace App\Providers;
 
-use App\Helpers\HTTPHelper;
 use App\Factories\RequestFactory;
 /**
  * Manage client request

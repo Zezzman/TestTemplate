@@ -18,6 +18,4 @@ return [
     ],
     // Timezone of application
     'TIMEZONE' => 'Australia/Brisbane',
-    // Show debug output
-    'DEBUG' => (getenv('DEBUG') == true),
 ];

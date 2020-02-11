@@ -54,7 +54,7 @@ final class HTTPHelper extends Helper
     {
         $get = $_GET;
         if (! is_null($param)) {
-            if (HTTPHelper::isGET($param)) {
+            if (self::isGET($param)) {
                 return $get[$param];
             } else {
                 return false;
@@ -70,7 +70,7 @@ final class HTTPHelper extends Helper
     {
         $post = $_POST;
         if (! is_null($param)) {
-            if (HTTPHelper::isPOST($param)) {
+            if (self::isPOST($param)) {
                 return $post[$param];
             } else {
                 return false;
@@ -92,10 +92,7 @@ final class HTTPHelper extends Helper
             return trim($query, '/');
         }
     }
-    /**
-     * 
-     */
-    public static function redirect(string $uri, array $params = null, int $responseCode = null)
+    public static function link(string $uri, array $params = null)
     {
         // redirect to new $uri
         $url = config('CLOSURES.LINK')('PUBLIC') . $uri;
@@ -119,6 +116,17 @@ final class HTTPHelper extends Helper
                     $url .= "$key=$value";
                 }
             }
+        }
+        return $url;
+    }
+    /**
+     * 
+     */
+    public static function redirect(string $uri, array $params = null, int $responseCode = null)
+    {
+        $url = self::link($uri, $params);
+        if (empty($url)) {
+            return false;
         }
         if (! is_null($responseCode) && $responseCode > 0) {
             header("Location: $url", true, $responseCode);

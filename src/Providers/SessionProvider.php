@@ -1,6 +1,7 @@
 <?php
 namespace App\Providers;
 
+use App\Helpers\HTTPHelper;
 /**
  * Manage Client Session
  * 

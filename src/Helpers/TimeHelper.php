@@ -15,6 +15,23 @@ final class TimeHelper extends Helper
     {
         return $this->format();
     }
+    public function __construct(string $dateString = null, string $format = null)
+    {
+        if (is_null($dateString) || empty($dateString)) {
+            $this->dateString = date_create();
+        } else {
+            if (is_null($format)) {
+                $this->dateString = date_create($dateString);
+            } else {
+                $this->dateString = date_create_from_format($format, $dateString);
+            }
+        }
+        if (! ($this->dateString)) {
+            $this->dateString = false;
+        } else {
+            $this->datePhase = $this->dateString->format('a');
+        }
+    }
     /**
      * Create date instance
      * 
@@ -24,23 +41,7 @@ final class TimeHelper extends Helper
      */
     public static function create(string $dateString = null, string $format = null)
     {
-        $timer = new self();
-        if (is_null($dateString) || empty($dateString)) {
-            $timer->dateString = date_create();
-        } else {
-            if (is_null($format)) {
-                $timer->dateString = date_create($dateString);
-            } else {
-                $timer->dateString = date_create_from_format($format, $dateString);
-            }
-        }
-        if (! ($timer->dateString)) {
-            $timer->dateString = false;
-        } else {
-            $timer->datePhase = $timer->dateString->format('a');
-        }
-
-        return $timer;
+        return new self($dateString, $format);
     }
     /**
      * Create date instance with elapsed time set
@@ -70,13 +71,22 @@ final class TimeHelper extends Helper
         return -1;
     }
     /**
+     * DateTime instance
+     * 
+     * @return   DateTime     DateTime instance
+     */
+    public function dateTime()
+    {
+        return $this->dateString;
+    }
+    /**
      * Format time based on dateString variable
      * 
      * @param   string      $format          format of time
      * 
      * @return   string     formated time
      */
-    public function format(string $format = 'Y-m-d H:i:s')
+    public function format(string $format = 'Y-m-d H:i:s.u')
     {
         if ($this->dateString) {
             return $this->dateString->format($format);
@@ -156,15 +166,15 @@ final class TimeHelper extends Helper
         }
     }
     /**
-     * smaller than date given
+     * Difference between two DateTime objects
      * 
-     * @param       string          $date               dateString
+     * @param       DateTime        $date             time string
      * 
-     * @return      bool            true if given date is larger than date instance
+     * @return      date_diff      true if given time is larger than time instance
      */
-    public function smallerThan($date = null)
+    public function diff($date = null)
     {
-        if (! ($this->dateString)) {
+        if (empty($this->dateString)) {
             return false;
         }
         if (is_string($date)) {
@@ -173,11 +183,33 @@ final class TimeHelper extends Helper
             return false;
         }
 
-        if (! ($date->dateString)) {
+        if (empty($date->dateString)) {
             return false;
         }
-        $diff = date_diff($this->dateString, $date->dateString);
-        return ($diff->invert === 0);
+        return date_diff($this->dateString, $date->dateString);
+    }
+    /**
+     * smaller than date given
+     * 
+     * @param       string          $date               dateString
+     * 
+     * @return      bool            true if given date is larger than date instance
+     */
+    public function smallerThan($date = null)
+    {
+        if (empty($this->dateString)) {
+            return false;
+        }
+        if (is_string($date)) {
+            $date = self::create($date);
+        } elseif (! is_object($date) && ! ($date instanceof self)){
+            return false;
+        }
+
+        if (empty($date->dateString)) {
+            return false;
+        }
+        return $this->dateString < $date->dateString;
     }
     /**
      * larger than date given
@@ -188,18 +220,7 @@ final class TimeHelper extends Helper
      */
     public function largerThan($date = null)
     {
-        return ! $this->smallerThan($date);
-    }
-    /**
-     * Difference between two DateTime objects
-     * 
-     * @param       DateTime        $date             time string
-     * 
-     * @return      date_diff      true if given time is larger than time instance
-     */
-    public function difference($date = null)
-    {
-        if (! ($this->dateString)) {
+        if (empty($this->dateString)) {
             return false;
         }
         if (is_string($date)) {
@@ -208,9 +229,32 @@ final class TimeHelper extends Helper
             return false;
         }
 
-        if (! ($date->dateString)) {
+        if (empty($date->dateString)) {
             return false;
         }
-        return date_diff($this->dateString, $date->dateString);
+        return $this->dateString > $date->dateString;
+    }
+    /**
+     * larger than date given
+     * 
+     * @param       string          $date               dateString
+     * 
+     * @return      bool            true if given date is smaller than date instance
+     */
+    public function equalTo($date = null)
+    {
+        if (empty($this->dateString)) {
+            return false;
+        }
+        if (is_string($date)) {
+            $date = self::create($date);
+        } elseif (! is_object($date) && ! ($date instanceof self)){
+            return false;
+        }
+
+        if (empty($date->dateString)) {
+            return false;
+        }
+        return $this->dateString == $date->dateString;
     }
 }

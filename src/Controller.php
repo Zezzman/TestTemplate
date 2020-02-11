@@ -33,11 +33,24 @@ class Controller implements IController
      */
     public function __construct(IRequest $request = null)
     {
+        if (config('PERMISSIONS.NO_CACHE', false)) {
+            header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+            header("Cache-Control: post-check=0, pre-check=0", false);
+            header("Pragma: no-cache");
+        }
+
         $this->request = $request;
     }
     public function getRequest()
     {
         return $this->request ?? HttpRequestModel::empty();
+    }
+    public function isMethod(string $method)
+    {
+        if (! is_null($this->request)) {
+            return ($this->request->method === $method);
+        }
+        return false;
     }
     /**
      * Create view
@@ -128,7 +141,7 @@ class Controller implements IController
                     View::create($respond, requireConfig('PATHS.RESOURCES') . 'responses/index', $viewModel)->render();
                 }
             } catch (Exception $e) {
-                if (config('DEBUG')) {
+                if (config('PERMISSIONS.DEBUG')) {
                     echo "({$name}) : ". $e->getMessage();
                 } else {
                     echo 'Something went wrong';

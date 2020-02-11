@@ -5,6 +5,7 @@ use App\Interfaces\IRequest;
 use App\Interfaces\IController;
 use App\Models\HttpRequestModel;
 use App\Helpers\DataCleanerHelper;
+use App\Helpers\HTTPHelper;
 use Exception;
 /**
  * Base class for api controller classes
@@ -83,7 +84,7 @@ abstract class APIController implements IController
                 $message = DataCleanerHelper::cleanArray((array) $message);
                 $body['message'] = $message;
             }
-            if (! is_null($exception) && config('DEBUG')) {
+            if (! is_null($exception) && config('PERMISSIONS.DEBUG')) {
                 $body['request'] = $request;
                 $body['Exception'] = $exception;
                 if ($body['message'] === '') {
