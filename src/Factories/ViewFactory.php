@@ -30,28 +30,28 @@ class ViewFactory
      */
     public static function layoutPath(string $name)
     {
-        return self::securePath($name, config('PATHS.RESOURCES') . 'layouts/');
+        return self::securePath($name, requireConfig('PATHS.RESOURCES') . 'layouts/');
     }
     /**
      * 
      */
     public static function headerPath(string $name)
     {
-        return self::securePath($name, config('PATHS.RESOURCES') . 'headers/');
+        return self::securePath($name, requireConfig('PATHS.RESOURCES') . 'headers/');
     }
     /**
      * 
      */
     public static function footerPath(string $name)
     {
-        return self::securePath($name, config('PATHS.RESOURCES') . 'footers/');
+        return self::securePath($name, requireConfig('PATHS.RESOURCES') . 'footers/');
     }
     /**
      * 
      */
     public static function sectionPath(string $name)
     {
-        return self::securePath($name, config('PATHS.RESOURCES') . 'sections/');
+        return self::securePath($name, requireConfig('PATHS.RESOURCES') . 'sections/');
     }
     private static function securePath(string $name, $offsetFolder = null)
     {
@@ -63,7 +63,6 @@ class ViewFactory
         if (file_exists($path = $root .  "{$name}.php"))
             return $path;
         
-            
         $app = $root . requireConfig('PATHS.APP');
         if (file_exists($path = $app . ($offsetFolder ?? '') . "{$name}.php"))
             return $path;
