@@ -56,19 +56,19 @@ class ViewFactory
     private static function securePath(string $name, $offsetFolder = null)
     {
         $name = DataCleanerHelper::cleanValue($name);
-
-        $root = requireConfig('PATHS.ROOT');
-        if (file_exists($path = $root . ($offsetFolder ?? '') . "{$name}.php"))
-            return $path;
-        if (file_exists($path = $root .  "{$name}.php"))
-            return $path;
         
+        $root = requireConfig('PATHS.ROOT');
         $app = $root . requireConfig('PATHS.APP');
         if (file_exists($path = $app . ($offsetFolder ?? '') . "{$name}.php"))
             return $path;
         if (file_exists($path = $app . "{$name}.php"))
             return $path;
         
+        
+        if (file_exists($path = $root . ($offsetFolder ?? '') . "{$name}.php"))
+            return $path;
+        if (file_exists($path = $root .  "{$name}.php"))
+            return $path;
 
         throw new Exception('Missing file : ' . ($offsetFolder ?? '') . $name);
         exit();
