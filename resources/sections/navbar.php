@@ -5,8 +5,8 @@
 if (isset($bag['links'])) {
     $uri = $this->controller->getRequest()->uri;
     $links = $bag['links'];
-    $leftLinks = [];
-    $rightLinks = [];
+    $left = '';
+    $right = '';
     foreach ($links as $name => $link) {
         if (! isset($link['hide']) || $link['hide'] === false) {
             if (isset($link['link'])) {
@@ -15,29 +15,37 @@ if (isset($bag['links'])) {
                     'link' => config('CLOSURES.LINK')('PUBLIC') . $link['link'],
                     'active' => ($link['link'] === $uri) ? 'active' : '',
                 ];
+                $item = App\Helpers\QueryHelper::insertCodes($linkObj, '<li class="nav-item {active}"><a class="nav-link" href="{link}">{name}</a></li>');
                 if (isset($link['align'])) {
                     if ($link['align'] === 'right') {
-                        $rightLinks[] = $linkObj;
+                        $right .= $item;
                     }
                 } else {
-                    $leftLinks[] = $linkObj;
+                    $left .= $item;
+                }
+            } elseif (isset($link['mail'])) {
+                $linkObj = [
+                    'name' => $name,
+                    'mail' => $link['mail'],
+                ];
+                $item = App\Helpers\QueryHelper::insertCodes($linkObj, '<li class="nav-item"><a class="nav-link" href="mailto:{mail}">{name}</a></li>');
+                if (isset($link['align'])) {
+                    if ($link['align'] === 'right') {
+                        $right .= $item;
+                    }
+                } else {
+                    $left .= $item;
                 }
             }
         }
     }
-    $left = '';
-    if (count($leftLinks) > 0) {
-        $left = '<ul class="navbar-nav mr-auto">' . 
-        App\Helpers\QueryHelper::insertCodes($leftLinks,
-            '<li class="nav-item {active}"><a class="nav-link" href="{link}">{name}</a></li>', true) .
-        '</ul>';
+    if ($left != '')
+    {
+        $left = '<ul class="navbar-nav mr-auto">'. $left . '</ul>';
     }
-    $right = '';
-    if (count($rightLinks) > 0) {
-        $right = '<ul class="navbar-nav ml-auto">' . 
-        App\Helpers\QueryHelper::insertCodes($rightLinks,
-            '<li class="nav-item {active}"><a class="nav-link" href="{link}">{name}</a></li>', true) .
-        '</ul>';
+    if ($right != '')
+    {
+        $right = '<ul class="navbar-nav ml-auto">' . $right . '</ul>';
     }
     echo (
         '<nav class="navbar navbar-expand-md navbar-dark bg-dark">
