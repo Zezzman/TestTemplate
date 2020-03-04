@@ -15,7 +15,11 @@ if (isset($bag['links'])) {
                     'link' => config('CLOSURES.LINK')('PUBLIC') . $link['link'],
                     'active' => ($link['link'] === $uri) ? 'active' : '',
                 ];
-                $item = App\Helpers\QueryHelper::insertCodes($linkObj, '<li class="nav-item {active}"><a class="nav-link" href="{link}">{name}</a></li>');
+                if (isset($link['target']))
+                {
+                    $linkObj['target'] = 'target="'. $link['target'] . '"';
+                }
+                $item = App\Helpers\QueryHelper::insertCodes($linkObj, '<li class="nav-item {active}"><a class="nav-link" href="{link}" {target}>{name}</a></li>');
                 if (isset($link['align'])) {
                     if ($link['align'] === 'right') {
                         $right .= $item;
@@ -47,16 +51,10 @@ if (isset($bag['links'])) {
     {
         $right = '<ul class="navbar-nav ml-auto">' . $right . '</ul>';
     }
-    echo (
-        '<nav class="navbar navbar-expand-md navbar-dark bg-dark">
-                <button class="navbar-toggler" type="button" data-toggle="collapse" 
-                data-target="#navbar-collapse-div" aria-controls="navbar-collapse-div"
-                aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>'
-            . App\Helpers\QueryHelper::insertCodes(['left' => $left, 'right' => $right],
-            ('<div class="collapse navbar-collapse" id="navbar-collapse-div">{left}{right}</div>'))
-        . '</nav>'
+    $entries = '<div class="collapse navbar-collapse" id="navbar-collapse-div">' . $left . $right . '</div>';
+    echo App\Helpers\FileHelper::loadFile(
+        config('PATHS.ROOT~RESOURCES+LAYOUT.NAV'),
+        ['nav-entries' => $entries]
     );
 }
 ?>

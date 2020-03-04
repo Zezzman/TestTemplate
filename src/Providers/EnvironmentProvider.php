@@ -7,10 +7,15 @@ use Exception;
  * Manage environment variables
  * 
  * set/update/manage environment variables
+ * 
  */
 final class EnvironmentProvider
 {
-    const CONFIG_SEPARATOR = '.';
+    const CONFIG_OPERATORS = [
+        'separator' => '.',
+        'add' => '+',
+        'follow' => '~',
+    ];
     private static $instance = null;
     public $configs = [];
     public $files = [];
@@ -106,6 +111,11 @@ final class EnvironmentProvider
                 return $default;
             }
         } else {
+            if (\strpos($key, self::CONFIG_OPERATORS['add'])
+            || strpos($key, self::CONFIG_OPERATORS['follow']))
+            {
+                return self::searchOperations($this->configs, $key, $default);
+            }
             return self::searchConfig($this->configs, $key, $default);
         }
     }
@@ -121,8 +131,8 @@ final class EnvironmentProvider
     {
         $configs = &$this->configs;
         if (is_array($configs)) {
-            $key = trim(strtoupper($key), self::CONFIG_SEPARATOR);
-            $keys = explode(self::CONFIG_SEPARATOR, $key);
+            $key = trim(strtoupper($key), self::CONFIG_OPERATORS['separator']);
+            $keys = explode(self::CONFIG_OPERATORS['separator'], $key);
             
             for ($i = 0; $i < count($keys); $i++) {
                 $index = $keys[$i];
@@ -340,11 +350,82 @@ final class EnvironmentProvider
             return $default;
         }
 
-        $constant = ArrayHelper::deepSearch($configs, strtoupper($key), self::CONFIG_SEPARATOR);
+        $constant = ArrayHelper::deepSearch($configs, strtoupper($key), self::CONFIG_OPERATORS['separator']);
         if (is_null($constant)) {
             return $default;
         } else {
             return $constant;
         }
+    }
+    /**
+     * Search Operations
+     * 
+     * @param   array       $config             configuration settings
+     * @param   string      $key                key name within configuration settings
+     * @param   mix         $default            default value when value is not found
+     * 
+     * @return  mix         return value related to the $key and return $default when value is not found
+     */
+    public static function searchOperations(array $configs, string $sequence, $default = false)
+    {
+        $items = \explode(self::CONFIG_OPERATORS['add'], $sequence);
+        $config = null;
+        $type = null;
+        foreach ($items as $item)
+        {
+            $blocks = \explode(self::CONFIG_OPERATORS['follow'], $item);
+            if (\count($blocks) > 1)
+            {
+                $base = null;
+                $blockType = null;
+                foreach ($blocks as $block)
+                {
+                    if ($pos = \strpos(\strrev($block), self::CONFIG_OPERATORS['separator']))
+                    {
+                        $base = $base ?? self::searchConfig($configs, \substr($block, 0, -$pos - 1));
+                        $name = \substr($block, -$pos);
+                    }
+                    else
+                    {
+                        $name = $block;
+                    }
+                    if (! empty($base))
+                    {
+                        $blockResult = self::searchConfig($base, $name, $default);
+                    }
+                    else
+                    {
+                        $blockResult = self::searchConfig($configs, $name, $default);
+                    }
+                    $blockType = $blockType ?? \gettype($blockResult);
+                    if ($blockType == 'string' || $blockType == 'integer')
+                    {
+                        $result = $result ?? '';
+                        $result .= (string)$blockResult;
+                    }
+                    else
+                    {
+                        $result = $result ?? [];
+                        $result[] = $blockResult;
+                    }
+                }
+            }
+            else
+            {
+                $result = self::searchConfig($configs, $item, $default);
+            }
+            $type = $type ?? \gettype($result);
+            if ($type == 'string' || $type == 'integer')
+            {
+                $config = $config ?? '';
+                $config .= (string)$result;
+            }
+            else
+            {
+                $config = $config ?? [];
+                $config[] = $result;
+            }
+        }
+        return $config;
     }
 }
