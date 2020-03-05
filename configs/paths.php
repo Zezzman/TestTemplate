@@ -5,7 +5,7 @@ return [
     'PATHS' => [
         'PUBLIC' => 'public/',
         'RESOURCES' => 'resources/',
-        'APP' => 'app/',
+        'APP' => '',
         'SRC' => 'src/',
         'ROUTES' => 'routes/',
         'STORAGE' => 'storage/',

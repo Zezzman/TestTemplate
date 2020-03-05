@@ -2,9 +2,9 @@
     "autoload": {
         "psr-4": {
             "App\\": "src/",
-            "App\\Controllers\\": "app/http/controllers/",
-            "App\\API\\": "app/http/api/",
-            "App\\CLI\\": "app/cli/"
+            "App\\Controllers\\": "http/controllers/",
+            "App\\API\\": "http/api/",
+            "App\\CLI\\": "cli/"
         }
     },
     "require" : {

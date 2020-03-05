@@ -1,13 +1,16 @@
 /*
 !app
 !bootstrap
+!cli
 !configs
+!http
 !public
 !resources
 !routes
 !src
 !storage
 !vendors
+!views
 !.htaccess
 !.gitignore
 !composer.json
