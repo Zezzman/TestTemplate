@@ -7,6 +7,8 @@ use App\Providers\HttpRequestProvider;
 use App\Providers\CLIRequestProvider;
 use App\Models\HttpRequestModel;
 use App\Models\CLIRequestModel;
+use Exception;
+
 /**
  * Process client requests into request object
  * 
