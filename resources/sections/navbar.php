@@ -12,7 +12,7 @@ if (isset($bag['links'])) {
             if (isset($link['link'])) {
                 $linkObj = [
                     'name' => $name,
-                    'link' => config('CLOSURES.LINK')('PUBLIC') . $link['link'],
+                    'link' => $link['link'],
                     'active' => ($link['link'] === $uri) ? 'active' : '',
                 ];
                 if (isset($link['target']))
