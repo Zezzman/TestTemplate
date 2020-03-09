@@ -1,3 +1,4 @@
+/* Scans for codes and inputs given values into them e.i. like the PHP QueryHelper::scanCodes */
 function CodeScanner(){
     var content = "";
 
