@@ -18,3 +18,59 @@
     display: grid;
     grid-template-columns: auto auto;
 }
+
+.form-grid {
+    border-top: $table-border-width solid $table-border-color;
+    border-left: $table-border-width solid $table-border-color;
+
+    .form-body {
+        @extend .row;
+        margin: 0;
+    }
+    .form-row {
+        @extend .row;
+        
+        > div {
+            padding: .5rem 1rem .5rem 1rem;
+            border-right: $table-border-width solid $table-border-color;
+            border-bottom: $table-border-width solid $table-border-color;
+        }
+    }
+    .form-bold-row {
+        @extend .row;
+        font-weight: bold;
+
+        > div {
+            padding: .5rem 1rem .5rem 1rem;
+            border-right: $table-border-width solid $table-border-color;
+            border-bottom: $table-border-width solid $table-border-color;
+        }
+    }
+    .form-header {
+        @extend .form-body;
+        font-weight: bold;
+
+        > div {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            border-right: $table-border-width solid $table-border-color;
+            border-bottom: $table-border-width solid $table-border-color;
+        }
+    }
+    .form-footer {
+        @extend .row;
+        margin: 0;
+        border-right: $table-border-width solid $table-border-color;
+        border-bottom: $table-border-width solid $table-border-color;
+
+        > div {
+            padding-top: .5rem;
+            padding-bottom: .5rem;
+        }
+    }
+}
+
+form.grid {
+    // display: grid
+    // grid formations
+}

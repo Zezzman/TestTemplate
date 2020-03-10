@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container-response container-<?= $model->responseCode; ?>">
     <div class="row text-center vh-85">
         <div class="col-12 m-auto">
             <h1><?= $model->responseCode; ?></h1>

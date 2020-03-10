@@ -1,7 +1,9 @@
 @import "../../public/assets/plugins/node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "bootstrap-variables";
 @import "../../public/assets/plugins/node_modules/bootstrap/scss/bootstrap";
-@import 'snippets';
 @import 'bootstrapExtension';
+@import "variables";
+@import 'snippets';
 @import 'grid';
 // @import 'forum';
 
