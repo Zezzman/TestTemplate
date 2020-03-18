@@ -11,7 +11,6 @@
 !storage
 !vendors
 !views
-!.htaccess
 !.gitignore
 !composer.json
 !composer.lock
