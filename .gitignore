@@ -9,7 +9,7 @@
 !routes
 !src
 !storage
-!vendors
+!vendor
 !views
 !.gitignore
 !composer.json

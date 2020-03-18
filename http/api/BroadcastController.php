@@ -1,7 +1,7 @@
 <?php
 namespace App\API;
 
-use App\APIController;
+use System\APIController;
 /**
  * 
  */

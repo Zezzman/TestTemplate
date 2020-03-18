@@ -1,8 +1,8 @@
 <?php
 namespace App\CLI;
 
-use App\CLIController;
-use App\ViewModels\ViewModel;
+use System\CLIController;
+use System\ViewModels\ViewModel;
 /**
  * 
  */

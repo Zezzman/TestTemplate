@@ -19,7 +19,7 @@ if (isset($bag['links'])) {
                 {
                     $linkObj['target'] = 'target="'. $link['target'] . '"';
                 }
-                $item = App\Helpers\QueryHelper::insertCodes($linkObj, '<li class="nav-item {active}"><a class="nav-link" href="{link}" {target}>{name}</a></li>');
+                $item = System\Helpers\QueryHelper::insertCodes($linkObj, '<li class="nav-item {active}"><a class="nav-link" href="{link}" {target}>{name}</a></li>');
                 if (isset($link['align'])) {
                     if ($link['align'] === 'right') {
                         $right .= $item;
@@ -32,7 +32,7 @@ if (isset($bag['links'])) {
                     'name' => $name,
                     'mail' => $link['mail'],
                 ];
-                $item = App\Helpers\QueryHelper::insertCodes($linkObj, '<li class="nav-item"><a class="nav-link" href="mailto:{mail}">{name}</a></li>');
+                $item = System\Helpers\QueryHelper::insertCodes($linkObj, '<li class="nav-item"><a class="nav-link" href="mailto:{mail}">{name}</a></li>');
                 if (isset($link['align'])) {
                     if ($link['align'] === 'right') {
                         $right .= $item;
@@ -52,7 +52,7 @@ if (isset($bag['links'])) {
         $right = '<ul class="navbar-nav ml-auto">' . $right . '</ul>';
     }
     $entries = '<div class="collapse navbar-collapse" id="navbar-collapse-div">' . $left . $right . '</div>';
-    echo App\Helpers\FileHelper::loadFile(
+    echo System\Helpers\FileHelper::loadFile(
         config('PATHS.ROOT~RESOURCES+LAYOUT.NAV'),
         ['nav-entries' => $entries]
     );

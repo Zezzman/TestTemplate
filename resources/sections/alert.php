@@ -7,13 +7,13 @@ if (is_array($bag) && ! empty($bag)) {
     if (isset($bag['message'])) {
         $alert['type'] = 'alert ' . ($alert['type'] ?? 'alert-warning');
         $style = $bag['style'] ?? '<div id="{id}" class="{class} {type}">{message}</div>';
-        echo App\Helpers\QueryHelper::scanCodes($bag, $style, $defaults);
+        echo System\Helpers\QueryHelper::scanCodes($bag, $style, $defaults);
     } else {
         foreach ($bag as $key => $alert) {
             if (isset($alert['message'])) {
                 $alert['type'] = 'alert ' . ($alert['type'] ?? 'alert-warning');
                 $style = $alert['style'] ?? '<div id="{id}" class="{class} {type}">{message}</div>';
-                echo App\Helpers\QueryHelper::scanCodes($alert, $style, $defaults);
+                echo System\Helpers\QueryHelper::scanCodes($alert, $style, $defaults);
             }
         }
     }

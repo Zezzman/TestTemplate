@@ -1,8 +1,8 @@
 <?php
 namespace App\Controllers;
 
-use App\Controller;
-use App\ViewModels\ViewModel;
+use System\Controller;
+use System\ViewModels\ViewModel;
 /**
  * 
  */

@@ -1,9 +1,9 @@
 <?php
 namespace App\Controllers;
 
-use App\Controller;
-use App\Helpers\DataCleanerHelper;
-use App\ViewModels\ViewModel;
+use System\Controller;
+use System\Helpers\DataCleanerHelper;
+use System\ViewModels\ViewModel;
 
 /**
  * 

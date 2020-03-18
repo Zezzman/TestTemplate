@@ -4,6 +4,12 @@ return [
     'APP' => [
         'NAME' => 'Application Name',
         'ENVIRONMENT' => getenv('APP_ENVIRONMENT'),
+        'AUTHOR' => 'Francois Le Roux',
+        'COPYRIGHT' => [
+            'DATE' => date('Y'),
+        ],
+        'EMAIL' => 'francoisleroux97@gmail.com',
+        'GITHUB' => 'https://github.com/Zezzman'
     ],
     // Method client used to connect to server
     'CLIENT_TYPE' => $this->clientType(),

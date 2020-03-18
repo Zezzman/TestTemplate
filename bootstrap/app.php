@@ -3,8 +3,26 @@ error_reporting(0);
 /**
  * Register Composer auto loader
  */
-require_once(dirname(__DIR__) . '/vendor/autoload.php');
+if (is_file(dirname(__DIR__) . '/vendor/autoload.php'))
+{
+    require_once(dirname(__DIR__) . '/vendor/autoload.php');
+}
+else
+{
+    echo 'Autoload Not Found';
+    throw new \Exception('Autoload Not Found');
+    exit();
+}
 /**
  * Load Application
  */
-require_once(dirname(__DIR__) . '/src/Launcher.php');
+if (is_file(dirname(__DIR__) . '/src/System/Launcher.php'))
+{
+    require_once(dirname(__DIR__) . '/src/System/Launcher.php');
+}
+else
+{
+    echo 'Launcher Not Found';
+    throw new \Exception('Launcher Not Found');
+    exit();
+}

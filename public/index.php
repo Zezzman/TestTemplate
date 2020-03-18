@@ -13,7 +13,7 @@ setConfig('APP', ['ARGV' => ($argv ?? [])]);
 /**
  * Routes
  */
-$router = new App\Router();
+$router = new System\Router();
 $request = $router->request;
 
 /**
