@@ -1,7 +1,7 @@
 <?php
 $path = trim($bag['path'], '/');
 if (isset($path) && ! empty($path)) {
-    if (is_file(config('CLOSURES.PATH')('STORAGE') . $path)) {
+    if (is_file(config('PATHS.ROOT~STORAGE') . $path)) {
         $file = \System\Providers\FileProviders\MediaFileProvider::create('storage/' . $path);
         if (is_null($file)
         || ! $file->isValid()) {
@@ -20,7 +20,7 @@ if (isset($path) && ! empty($path)) {
             <small><?= System\Helpers\HTMLHelper::breadcrumbs('storage/' . $path); ?></small>
         </div>
         <div class="col-12">
-            <?= System\Helpers\HTMLHelper::backLink($path, config('CLOSURES.LINK')('STORAGE')); ?>
+            <?= System\Helpers\HTMLHelper::backLink($path, config('LINKS.PUBLIC~STORAGE')); ?>
             <?= System\Helpers\HTMLHelper::folderFiles('storage/' . $path, [], true); ?>
         </div>
     </div>

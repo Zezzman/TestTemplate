@@ -9,4 +9,4 @@ require_once(__DIR__ . '/bootstrap/app.php');
  */
 $app = Launcher::setup();
 
-header('Location: ' . requireConfig('DOMAIN+LINKS.PUBLIC'));
+header('Location: ' . requireConfig('LINKS.PUBLIC'));
