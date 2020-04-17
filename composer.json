@@ -5,7 +5,8 @@
             "App\\API\\": "http/api/",
             "App\\CLI\\": "cli/",
             "App\\": "src/",
-            "System\\": "../project-framework/"
+            
+            "System\\": "../project-framework/src/"
         }
     },
     "require" : {

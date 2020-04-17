@@ -1,6 +1,6 @@
 <?php
 // URI locations
-$domain = requireConfig('DOMAIN');
+$domain = config('DOMAIN');
 return [
     'LINKS' => [
         // Application Link

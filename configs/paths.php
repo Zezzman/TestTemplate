@@ -1,6 +1,6 @@
 <?php
 // Directory paths relative to ROOT
-$root = requireConfig('PATHS.ROOT');
+$root = config('PATHS.ROOT');
 return [
     'PATHS' => [
         'PUBLIC' => $root . 'public/',
