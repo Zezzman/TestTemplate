@@ -5,7 +5,5 @@
         "jquery-validation": "^1.19.1",
         "popper.js": "^1.16.1"
     },
-    "devDependencies": {
-        "@fortawesome/fontawesome-free": "^5.12.1"
-    }
+    "devDependencies": {}
 }

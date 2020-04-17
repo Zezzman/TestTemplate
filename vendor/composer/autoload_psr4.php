@@ -6,7 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'System\\' => array($baseDir . '/src/System'),
+    'System\\' => array($baseDir . '/../project-framework'),
     'App\\Controllers\\' => array($baseDir . '/http/controllers'),
     'App\\CLI\\' => array($baseDir . '/cli'),
     'App\\API\\' => array($baseDir . '/http/api'),
