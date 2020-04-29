@@ -1,8 +1,8 @@
 <?php
-$path = trim($bag['path'], '/');
+$path = $bag['path'];
 if (isset($path) && ! empty($path)) {
-    if (is_file(config('PATHS.ROOT~STORAGE') . $path)) {
-        $file = \System\Providers\FileProviders\MediaFileProvider::create('storage/' . $path);
+    if (is_file(config('PATHS.ROOT~STORAGE') . rtrim($path, '/'))) {
+        $file = \System\Providers\Files\MediaFileProvider::create('storage/' . $path);
         if (is_null($file)
         || ! $file->isValid()) {
             throw new \System\Exceptions\RespondException(415, "");
