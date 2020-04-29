@@ -13,4 +13,4 @@ $this->get('document/', 'Home@Document');
  *  Upload files
  */
 $this->get('storage/{dir}...', 'Storage@Index')
-->setParams(['extensions' => ['jpg', 'jpeg', 'png', 'gif']]);
+->addParams(['extensions' => ['jpg', 'jpeg', 'png', 'gif']]);
