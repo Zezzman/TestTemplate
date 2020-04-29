@@ -6,7 +6,7 @@
             "App\\CLI\\": "cli/",
             "App\\": "src/",
             
-            "System\\": "../project-framework/src/"
+            "System\\": "../php-light-framework/src/"
         }
     },
     "require" : {

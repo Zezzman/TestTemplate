@@ -18,7 +18,7 @@ else
 /**
  * Load Application
  */
-if (is_file($launcher = dirname(__DIR__) . '/../project-framework/src/Launcher.php'))
+if (is_file($launcher = dirname(__DIR__) . '/../php-light-framework/src/Launcher.php'))
 {
     require_once($launcher);
 }
