@@ -3,12 +3,25 @@
 $root = config('PATHS.ROOT');
 return [
     'PATHS' => [
-        'PUBLIC' => $root . 'public/',
-        'RESOURCES' => 'resources/',
-        'APP' => '',
+        'APP' => $root,
+        'PUBLIC' => 'public/',
         'SRC' => 'src/',
         'ROUTES' => 'routes/',
-        'STORAGE' => 'storage/',
         'VENDOR' => 'vendor/',
+        'STORAGE' => 'storage/',
+        'RESOURCES' => ['resources/'],
+    ],
+    'CLOSURES' =>
+    [
+        'RESOURCE' => function (string $name)
+        {
+            $root = requireConfig('PATHS.ROOT');
+            $resources = (array) requireConfig('PATHS.RESOURCES');
+            foreach ($resources as $resource)
+            {
+                if (file_exists($path = $root . $resource .  $name))
+                    return $path;
+            }
+        }
     ]
 ];

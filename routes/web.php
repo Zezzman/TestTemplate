@@ -1,16 +1,16 @@
 <?php
-/* $provider->get('uri', 'Controller@Action'); */
+/* $this->get('uri', 'Controller@Action'); */
 /**
  *  Front Page
  */
-$provider->get('/', 'Home@Index');
-$provider->get('home/', 'Home@Index');
+$this->get('/', 'Home@Index');
+$this->get('home/', 'Home@Index');
 /**
  *  Documentation
  */
-$provider->get('document/', 'Home@Document');
+$this->get('document/', 'Home@Document');
 /**
  *  Upload files
  */
-$provider->get('storage/{dir}...', 'Storage@Index')
-->params(['extensions' => ['jpg', 'jpeg', 'png', 'gif']]);
+$this->get('storage/{dir}...', 'Storage@Index')
+->setParams(['extensions' => ['jpg', 'jpeg', 'png', 'gif']]);
