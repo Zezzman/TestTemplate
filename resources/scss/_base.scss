@@ -1,0 +1,71 @@
+/* navbar */
+.navbar {
+    @include media-breakpoint-up(md) { 
+        height: 2rem;
+        .nav-link
+        {
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+    }
+}
+
+.title
+{
+    h1
+    {
+        font-family: sans-serif;
+    }
+    a
+    {
+        text-decoration: none;
+        color: $title-link-color;
+    }
+    a:hover,
+    a:focus
+    {
+        text-decoration: none;
+        color: $title-link-hover-color;
+    }
+}
+.projects
+{
+    display: flex;
+    justify-content: space-around;
+    width: inherit;
+    margin: auto;
+    
+    h1
+    {
+        font-family: sans-serif;
+    }
+    a
+    {
+        text-decoration: none;
+        color: $black;
+    }
+    .project-card
+    {
+        display: flex;
+        justify-content: center;
+        padding: 1%;
+        margin-top: 0;
+
+        @include media-breakpoint-down(sm) {
+            .card-description
+            {
+                display: block;
+                height: auto;
+            }
+        }
+        @include media-breakpoint-down(sm) {
+            max-width: 15rem;
+        }
+        @include media-breakpoint-down(md) {
+            max-width: 30rem;
+        }
+        @include media-breakpoint-down(lg) {
+            max-width: 100rem;
+        }
+    }
+}

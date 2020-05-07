@@ -10,18 +10,5 @@ return [
         'VENDOR' => 'vendor/',
         'STORAGE' => 'storage/',
         'RESOURCES' => ['resources/'],
-    ],
-    'CLOSURES' =>
-    [
-        'RESOURCE' => function (string $name)
-        {
-            $root = requireConfig('PATHS.ROOT');
-            $resources = (array) requireConfig('PATHS.RESOURCES');
-            foreach ($resources as $resource)
-            {
-                if (file_exists($path = $root . $resource .  $name))
-                    return $path;
-            }
-        }
     ]
 ];
