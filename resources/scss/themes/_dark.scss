@@ -1,3 +1,13 @@
-/* Links */
-$title-link-color: $white;
-$title-link-hover-color: $pale-green;
+/* Navbar */
+.navbar
+{
+    @extend .navbar-dark;
+    .navbar-nav .nav-link
+    {
+        color: $light;
+    }
+}
+footer
+{
+    @extend .section;
+}

@@ -10,24 +10,6 @@
     }
 }
 
-.title
-{
-    h1
-    {
-        font-family: sans-serif;
-    }
-    a
-    {
-        text-decoration: none;
-        color: $title-link-color;
-    }
-    a:hover,
-    a:focus
-    {
-        text-decoration: none;
-        color: $title-link-hover-color;
-    }
-}
 .projects
 {
     display: flex;
